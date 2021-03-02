@@ -2,16 +2,16 @@ import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult} fr
 import 'source-map-support/register'
 
 import { getUserId } from '../utils'
-import { getAllTodos } from '../../businessLogic/todos';
+import { getAllWatchItems } from '../../businessLogic/watchItems';
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('Processing event: ', event)
 
-  // TODO: Get all TODO items for a current user
+  // TODO: Get all watch items for a current user
 
-  const allTodos = await getAllTodos(getUserId(event))
+  const allWatchItems = await getAllWatchItems(getUserId(event))
 
-  const items = allTodos.map(function(elem){
+  const items = allWatchItems.map(function(elem){
     const { userId, ...item } = elem
     return item
   })

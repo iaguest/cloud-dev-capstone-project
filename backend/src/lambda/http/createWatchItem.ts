@@ -2,19 +2,19 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 
-import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
-import { createTodo } from '../../businessLogic/todos'
+import { CreateWatchItemRequest } from '../../requests/CreateWatchItemRequest'
+import { createWatchItem } from '../../businessLogic/watchItems'
 import { getUserId } from '../utils'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('Processing event: ', event)
 
-  // TODO: Implement creating a new TODO item
+  // TODO: Implement creating a new watch item
 
-  const newTodo: CreateTodoRequest = JSON.parse(event.body)
+  const newWatchItem: CreateWatchItemRequest = JSON.parse(event.body)
 
-  const newItem = await createTodo(newTodo, getUserId(event))
-  const {userId, ...item} = newItem
+  const newItem = await createWatchItem(newWatchItem, getUserId(event))
+  const { userId, ...item } = newItem
 
   return {
     statusCode: 201,

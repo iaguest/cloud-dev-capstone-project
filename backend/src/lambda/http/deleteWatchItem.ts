@@ -3,14 +3,14 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
 import { getUserId } from '../utils'
-import { deleteTodo } from '../../businessLogic/todos'
+import { deleteWatchItem } from '../../businessLogic/watchItems'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('Processing event: ', event)
 
-  // TODO: Remove a TODO item by id
+  // TODO: Remove a watch item by id
 
-  const todoId = event.pathParameters.todoId
+  const watchId = event.pathParameters.watchId
   const userId: string = getUserId(event)
 
   const headers = {
@@ -19,7 +19,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   }
 
   try {
-    await deleteTodo(userId, todoId)
+    await deleteWatchItem(userId, watchId)
   }
   catch (e) {
     return {
