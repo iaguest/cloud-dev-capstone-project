@@ -68,7 +68,7 @@ export class DbAccess {
         'userId' : userId,
         'ticker' : ticker
       },
-      UpdateExpression: 'set price = :price, #ts = :timeStamp',
+      UpdateExpression: 'set price = :price, #ts = :ts',
       ExpressionAttributeNames: {
         "#ts": "timeStamp"
       },
