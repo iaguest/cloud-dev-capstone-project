@@ -61,7 +61,7 @@ export class DbAccess {
   }
 
   async updateWatchItem(watchUpdate: WatchItemUpdate, userId: string, ticker: string) {
-    logger.info("In updateTodoItem...")
+    logger.info("In updateWatchItem...")
     await this.docClient.update({
       TableName: this.watchTable,
       Key: {
