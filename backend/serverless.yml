@@ -1,5 +1,5 @@
 service:
-  name: serverless-todo-app
+  name: cloud-capstone-proj
 
 plugins:
   - serverless-webpack
@@ -51,6 +51,7 @@ functions:
           path: watchlist
           cors: true
           authorizer: Auth
+          # TODO: Check validation works properly
           request:
             schema:
               application/json: ${file(models/createwatchitem-request.json)}
@@ -69,6 +70,7 @@ functions:
           path: watchlist/{watchId}
           cors: true
           authorizer: Auth
+          # TODO: Check validation works properly
           request:
             schema:
               application/json: ${file(models/updatewatchitem-request.json)}

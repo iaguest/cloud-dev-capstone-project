@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "create todo",
+  "title": "create watchItem",
   "type": "object",
   "properties": {
     "ticker": {

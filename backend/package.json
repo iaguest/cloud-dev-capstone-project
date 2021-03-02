@@ -1,7 +1,7 @@
 {
-  "name": "serverless-todo-app",
+  "name": "cloud-dev-capstone-project",
   "version": "1.0.0",
-  "description": "Serverless TODO image app",
+  "description": "Serverless equity watchlist app",
   "dependencies": {
     "@types/axios": "^0.14.0",
     "@types/http-errors": "^1.6.1",
@@ -29,6 +29,6 @@
     "typescript": "^3.4.1",
     "webpack": "^4.29.6"
   },
-  "author": "Ivan Mushketyk",
-  "license": "MIT"
+  "author": "Ian Guest",
+  "license": "None"
 }
