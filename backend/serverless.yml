@@ -12,9 +12,9 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'eu-west-2'}
 
-  tracing:
-    lambda: true
-    apiGateway: true
+  # tracing:
+  #   lambda: true
+  #   apiGateway: true
 
   environment:
     ATTACHMENTS_S3_BUCKET: todos-attachments-677795121369-${self:provider.stage}
