@@ -3,20 +3,16 @@
     "title": "update todo",
     "type": "object",
     "properties": {
-      "name": {
-        "type": "string"
+      "price": {
+        "type": "number"
       },
-      "dueDate": {
+      "timeStamp": {
         "type": "string"
-      },
-      "done": {
-        "type": "boolean"
       }
     },
     "required": [
-      "name",
-      "dueDate",
-      "done"
+      "price",
+      "timeStamp"
     ],
     "additionalProperties": false
   }

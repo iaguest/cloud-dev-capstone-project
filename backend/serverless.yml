@@ -51,9 +51,9 @@ functions:
           path: watchlist
           cors: true
           authorizer: Auth
-          # request:
-          #   schema:
-          #     application/json: ${file(models/createtodo-request.json)}
+          request:
+            schema:
+              application/json: ${file(models/createwatchitem-request.json)}
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -69,9 +69,9 @@ functions:
           path: watchlist/{watchId}
           cors: true
           authorizer: Auth
-          # request:
-          #   schema:
-          #     application/json: ${file(models/updatetodo-request.json)}
+          request:
+            schema:
+              application/json: ${file(models/updatewatchitem-request.json)}
     iamRoleStatements:
       - Effect: Allow
         Action:

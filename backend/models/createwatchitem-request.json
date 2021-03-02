@@ -3,16 +3,16 @@
   "title": "create todo",
   "type": "object",
   "properties": {
-    "name": {
+    "ticker": {
       "type": "string"
     },
-    "dueDate": {
+    "description": {
       "type": "string"
     }
   },
   "required": [
-    "name",
-    "dueDate"
+    "ticker",
+    "description"
   ],
   "additionalProperties": false
 }
