@@ -17,10 +17,10 @@ provider:
   #   apiGateway: true
 
   environment:
-    ATTACHMENTS_S3_BUCKET: todos-attachments-677795121369-${self:provider.stage}
-    INDEX_NAME: UserId-todoId-Index
+    ATTACHMENTS_S3_BUCKET: watch-attachments-677795121369-${self:provider.stage}
+    INDEX_NAME: UserId-watchId-Index
     SIGNED_URL_EXPIRATION: 300
-    TODOS_TABLE: Todos-${self:provider.stage}
+    WATCH_TABLE: Watch-${self:provider.stage}
 
 functions:
 
@@ -140,14 +140,14 @@ resources:
         AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
-          - AttributeName: createdAt
+          - AttributeName: ticker
             AttributeType: S
-          - AttributeName: todoId
+          - AttributeName: watchId
             AttributeType: S
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
-          - AttributeName: createdAt
+          - AttributeName: ticker
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.TODOS_TABLE}
@@ -156,7 +156,7 @@ resources:
             KeySchema:
               - AttributeName: userId
                 KeyType: HASH
-              - AttributeName: todoId
+              - AttributeName: watchId
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL # What attributes will be copied to an index

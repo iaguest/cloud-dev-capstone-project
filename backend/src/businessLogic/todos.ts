@@ -1,7 +1,7 @@
 import * as uuid from 'uuid'
 
-import { TodoItem } from '../models/TodoItem'
-import { TodoUpdate } from '../models/TodoUpdate'
+import { WatchItem } from '../models/WatchItem'
+import { WatchItemUpdate } from '../models/WatchItemUpdate'
 import { DbAccess } from '../dataLayer/dbAccess'
 import { deleteTodoItemAttachment } from '../dataLayer/fileAccess'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
@@ -11,15 +11,15 @@ const dbAccess = new DbAccess()
 
 export async function getAllTodos(
   userId: string
-) : Promise<TodoItem[]> {
-  return dbAccess.getAllTodos(userId)
+) : Promise<WatchItem[]> {
+  return dbAccess.getAllWatchItems(userId)
 }
 
 export async function createTodo(
   createTodoRequest: CreateTodoRequest,
   userId: string
-) : Promise<TodoItem> {
-  return await dbAccess.createTodoItem({
+) : Promise<WatchItem> {
+  return await dbAccess.createWatchItem({
     userId: userId,
     todoId: uuid.v4(),
     createdAt: new Date().toISOString(),
@@ -35,13 +35,13 @@ export async function updateTodo(
   userId: string,
   todoId: string
 ) {
-  const toDoUpdate : TodoUpdate = {
+  const toDoUpdate : WatchItemUpdate = {
     ...updateTodoRequest,
   }
 
-  const currentTodoItem: TodoItem = await dbAccess.getTodo(userId, todoId)
+  const currentTodoItem: WatchItem = await dbAccess.getWatchItem(userId, todoId)
 
-  await dbAccess.updateTodoItem(toDoUpdate, userId, currentTodoItem.createdAt)
+  await dbAccess.updateWatchItem(toDoUpdate, userId, currentTodoItem.createdAt)
 }
 
 export async function setTodoItemAttachmentUrl(
@@ -49,7 +49,7 @@ export async function setTodoItemAttachmentUrl(
   todoId: string,
   url: string
 ) {
-  const currentTodoItem: TodoItem = await dbAccess.getTodo(userId, todoId)
+  const currentTodoItem: WatchItem = await dbAccess.getWatchItem(userId, todoId)
   
   await dbAccess.setTodoItemAttachmentUrl(userId, currentTodoItem.createdAt, url)
 }
@@ -58,11 +58,11 @@ export async function deleteTodo(
   userId: string,
   todoId:string
 ) {
-  const currentTodoItem: TodoItem = await dbAccess.getTodo(userId, todoId)
+  const currentTodoItem: WatchItem = await dbAccess.getWatchItem(userId, todoId)
 
   if (currentTodoItem.attachmentUrl !== undefined) {
     await deleteTodoItemAttachment(todoId)
   }
 
-  await dbAccess.deleteToDoItem(userId, currentTodoItem.createdAt)
+  await dbAccess.deleteWatchItem(userId, currentTodoItem.createdAt)
 }

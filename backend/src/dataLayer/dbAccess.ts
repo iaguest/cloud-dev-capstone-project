@@ -1,8 +1,8 @@
 import * as AWS  from 'aws-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 
-import { TodoItem } from '../models/TodoItem'
-import { TodoUpdate } from '../models/TodoUpdate'
+import { WatchItem } from '../models/WatchItem'
+import { WatchItemUpdate } from '../models/WatchItemUpdate'
 
 import { createLogger } from '../utils/logger'
 
@@ -15,14 +15,14 @@ export class DbAccess {
 
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
-    private readonly todosTable = process.env.TODOS_TABLE,
-    private readonly todosTableIndex = process.env.INDEX_NAME) {
+    private readonly watchTable = process.env.WATCH_TABLE,
+    private readonly watchTableIndex = process.env.INDEX_NAME) {
   }
 
-  async getAllTodos(userId: string): Promise<TodoItem[]> {
-    logger.info("In getAllTodos...")
+  async getAllWatchItems(userId: string): Promise<WatchItem[]> {
+    logger.info("In getAllWatchItems...")
     const result = await this.docClient.query({
-      TableName: this.todosTable,
+      TableName: this.watchTable,
       KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeValues: {
         ':userId': userId
@@ -31,82 +31,77 @@ export class DbAccess {
     }).promise()
 
     const items = result.Items
-    return items as TodoItem[]
+    return items as WatchItem[]
   }
 
-  async getTodo(userId: string, todoId:string) : Promise<TodoItem> {
-    logger.info("In getTodo...")
+  async getWatchItem(userId: string, watchId: string) : Promise<WatchItem> {
+    logger.info("In getWatchItem...")
     const result = await this.docClient.query({
-      TableName : this.todosTable,
-      IndexName : this.todosTableIndex,
-      KeyConditionExpression: 'userId = :userId and todoId = :todoId',
+      TableName : this.watchTable,
+      IndexName : this.watchTableIndex,
+      KeyConditionExpression: 'userId = :userId and watchId = :watchId',
       ExpressionAttributeValues: {
         ':userId': userId,
-        ':todoId': todoId,
+        ':watchId': watchId,
       }
     }).promise()
 
     const item = result.Items[0]
-    return item as TodoItem
+    return item as WatchItem
   }
 
-  async createTodoItem(todoItem: TodoItem): Promise<TodoItem> {
-    logger.info("In createTodoItem...")
+  async createWatchItem(watchItem: WatchItem): Promise<WatchItem> {
+    logger.info("In createWatchItem...")
     await this.docClient.put({
-      TableName: this.todosTable,
-      Item: todoItem
+      TableName: this.watchTable,
+      Item: watchItem
     }).promise()
 
-    return todoItem
+    return watchItem
   }
 
-  async updateTodoItem(todoUpdate: TodoUpdate, userId: string, createdAt: string) {
+  async updateWatchItem(watchUpdate: WatchItemUpdate, userId: string, ticker: string) {
     logger.info("In updateTodoItem...")
     await this.docClient.update({
-      TableName: this.todosTable,
+      TableName: this.watchTable,
       Key: {
         'userId' : userId,
-        'createdAt' : createdAt
+        'ticker' : ticker
       },
-      UpdateExpression: 'set #nme = :nme, dueDate = :dueDate, done = :done',
-      ExpressionAttributeNames: {
-        "#nme": "name"
-      },
+      UpdateExpression: 'set price = :price, timeStamp = :timeStamp',
       ExpressionAttributeValues: {
-        ':nme' : todoUpdate.name,
-        ':dueDate' : todoUpdate.dueDate,
-        ':done' : todoUpdate.done
+        ':price' : watchUpdate.price,
+        ':timeStamp' : watchUpdate.timeStamp
       }
     }).promise()
-
   }
 
-  async setTodoItemAttachmentUrl(userId: string, createdAt: string, url: string) {
-    logger.info("In setTodoItemAttachmentUrl...")
-    await this.docClient.update({
-      TableName: this.todosTable,
-      Key: {
-        'userId' : userId,
-        'createdAt' : createdAt
-      },
-      UpdateExpression: 'set attachmentUrl = :attachmentUrl',
-      ExpressionAttributeValues: {
-        ':attachmentUrl' : url,
-      }
-    }).promise()
-
-  }
-
-  async deleteToDoItem(userId: string, createdAt: string) {
-    logger.info("In deleteToDoItem...")
+  async deleteWatchItem(userId: string, ticker: string) {
+    logger.info("In deleteWatchItem...")
     await this.docClient.delete({
-      TableName: this.todosTable,
+      TableName: this.watchTable,
       Key: {
         'userId' : userId,
-        'createdAt' : createdAt
+        'ticker' : ticker
       },
     }).promise()
   }
+
+  // async setTodoItemAttachmentUrl(userId: string, createdAt: string, url: string) {
+  //   logger.info("In setTodoItemAttachmentUrl...")
+  //   await this.docClient.update({
+  //     TableName: this.watchTable,
+  //     Key: {
+  //       'userId' : userId,
+  //       'createdAt' : createdAt
+  //     },
+  //     UpdateExpression: 'set attachmentUrl = :attachmentUrl',
+  //     ExpressionAttributeValues: {
+  //       ':attachmentUrl' : url,
+  //     }
+  //   }).promise()
+
+  // }
 
 }
 
