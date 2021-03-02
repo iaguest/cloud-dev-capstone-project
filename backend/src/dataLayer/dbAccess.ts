@@ -68,10 +68,13 @@ export class DbAccess {
         'userId' : userId,
         'ticker' : ticker
       },
-      UpdateExpression: 'set price = :price, timeStamp = :timeStamp',
+      UpdateExpression: 'set price = :price, #ts = :timeStamp',
+      ExpressionAttributeNames: {
+        "#ts": "timeStamp"
+      },
       ExpressionAttributeValues: {
         ':price' : watchUpdate.price,
-        ':timeStamp' : watchUpdate.timeStamp
+        ':ts' : watchUpdate.timeStamp
       }
     }).promise()
   }
