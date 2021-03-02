@@ -1,0 +1,165 @@
+{
+	"info": {
+		"_postman_id": "255a818d-f29f-4a7d-8247-229d4f565bd8",
+		"name": "Cloud-Dev-Capstone-Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get watch items",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{apiId}}.execute-api.eu-west-2.amazonaws.com/dev/watchlist",
+					"protocol": "https",
+					"host": [
+						"{{apiId}}",
+						"execute-api",
+						"eu-west-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"watchlist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create watch item",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ticker\": \"AAL\",\n\t\"description\": \"Anglo American PLC\"\n}"
+				},
+				"url": {
+					"raw": "https://{{apiId}}.execute-api.eu-west-2.amazonaws.com/dev/watchlist",
+					"protocol": "https",
+					"host": [
+						"{{apiId}}",
+						"execute-api",
+						"eu-west-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"watchlist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update watch item",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"price\": 4321.0,\n\t\"timeStamp\": \"2019-12-11\"\n}"
+				},
+				"url": {
+					"raw": "https://{{apiId}}.execute-api.eu-west-2.amazonaws.com/dev/watchlist/fa94df9d-d85d-4a06-af8a-1fc812f48eba",
+					"protocol": "https",
+					"host": [
+						"{{apiId}}",
+						"execute-api",
+						"eu-west-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"watchlist",
+						"fa94df9d-d85d-4a06-af8a-1fc812f48eba"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete watch item",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{apiId}}.execute-api.eu-west-2.amazonaws.com/dev/watchlist/fa94df9d-d85d-4a06-af8a-1fc812f48eba",
+					"protocol": "https",
+					"host": [
+						"{{apiId}}",
+						"execute-api",
+						"eu-west-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"watchlist",
+						"fa94df9d-d85d-4a06-af8a-1fc812f48eba"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "apiId",
+			"value": "jilksy4rlg"
+		},
+		{
+			"key": "authToken",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5WSGs4d2RsMXZRWHljTzI5dzRsRCJ9.eyJpc3MiOiJodHRwczovL2Rldi1wZ3E0Y3d1bC51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDg1MDUxMDY5MTU5NDEzOTIwMDYiLCJhdWQiOiJJc3hXZ3dFZ0pmdGY4T3lIbHJqTTFjVWY0dnBaMHhzYSIsImlhdCI6MTYxNDcxNjgzOCwiZXhwIjoxNjE0NzUyODM4LCJhdF9oYXNoIjoiTEZCWW5HdmpxMEVVYWxCeE53aXlwQSIsIm5vbmNlIjoic3k2bDZ1VUVHalhBa3BmUVl6SzNBamg5YkR4d3VzTWcifQ.dMRrpVw55rv5-KJq75p0AE-6WM8DdSz0idfg3Hu-9WBaQBWIT_-Kmo3D_7dWiJ5gYJwDr7nr9o6TuaFWQsUv5COiIQoyLW2jOmoNlmfmQP5WasUjB1kSrI9pVzX9TRQOmQnqEuAa_wWNQU3D45sVItkzNXTciUvdbKrbSrjalrdjORoxxCN07CRqXJUYO3YK6u_DDkGVfbp_ybU2vxxGtwa0_HKnXVTefDXjA7U-uVL1VL9vlsnqYXevwTqIx-kQxRkY7rD37xvkxoMUIi8_d17FK1gDaEqklczFTo4QsZr_RcUL6J71_tbOjsjyy2iG5JpunplSYB3EBVqvVxj0ig"
+		}
+	]
+}

@@ -35,7 +35,7 @@ functions:
           method: get
           path: watchlist
           cors: true
-          # authorizer: Auth
+          authorizer: Auth
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -50,7 +50,7 @@ functions:
           method: post
           path: watchlist
           cors: true
-          # authorizer: Auth
+          authorizer: Auth
           # request:
           #   schema:
           #     application/json: ${file(models/createtodo-request.json)}
@@ -68,7 +68,7 @@ functions:
           method: patch
           path: watchlist/{watchId}
           cors: true
-          # authorizer: Auth
+          authorizer: Auth
           # request:
           #   schema:
           #     application/json: ${file(models/updatetodo-request.json)}
@@ -91,7 +91,7 @@ functions:
           method: delete
           path: watchlist/{watchId}
           cors: true
-          # authorizer: Auth
+          authorizer: Auth
     iamRoleStatements:
       - Effect: Allow
         Action:
