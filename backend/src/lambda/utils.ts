@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
-import { parseUserId } from "../auth/utils";
+//import { parseUserId } from "../auth/utils";
 
 /**
  * Get a user id from an API Gateway event
@@ -8,9 +8,12 @@ import { parseUserId } from "../auth/utils";
  * @returns a user id from a JWT token
  */
 export function getUserId(event: APIGatewayProxyEvent): string {
-  const authorization = event.headers.Authorization
-  const split = authorization.split(' ')
-  const jwtToken = split[1]
+  console.log('Processing event: ', event)
+  // const authorization = event.headers.Authorization
+  // const split = authorization.split(' ')
+  // const jwtToken = split[1]
 
-  return parseUserId(jwtToken)
+  // return parseUserId(jwtToken)
+
+  return "bob"  // HACK XXX: return hardcoded user id
 }
