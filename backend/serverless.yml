@@ -35,7 +35,7 @@ functions:
           method: get
           path: watchlist
           cors: true
-          authorizer: Auth
+          # authorizer: Auth
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -44,13 +44,13 @@ functions:
 
   # TODO: Configure this function
   CreateWatchItem:
-    handler: src/lambda/http/createWatchItems.handler
+    handler: src/lambda/http/createWatchItem.handler
     events:
       - http:
           method: post
           path: watchlist
           cors: true
-          authorizer: Auth
+          # authorizer: Auth
           # request:
           #   schema:
           #     application/json: ${file(models/createtodo-request.json)}
@@ -62,13 +62,13 @@ functions:
 
   # TODO: Configure this function
   UpdateWatchItem:
-    handler: src/lambda/http/updateWatchItems.handler
+    handler: src/lambda/http/updateWatchItem.handler
     events:
       - http:
           method: patch
           path: watchlist/{watchId}
           cors: true
-          authorizer: Auth
+          # authorizer: Auth
           # request:
           #   schema:
           #     application/json: ${file(models/updatetodo-request.json)}
@@ -91,7 +91,7 @@ functions:
           method: delete
           path: watchlist/{watchId}
           cors: true
-          authorizer: Auth
+          # authorizer: Auth
     iamRoleStatements:
       - Effect: Allow
         Action:

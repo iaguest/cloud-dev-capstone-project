@@ -25,7 +25,7 @@ export async function createWatchItem(
     ticker: createWatchItemRequest.ticker,
     description: createWatchItemRequest.description,
     timeStamp: new Date().toISOString(),              // HACK XXX: Needs time relating to price info
-    price: 0.0                                        // HACK XXX: Needs actual price info
+    price: 1234.0                                     // HACK XXX: Needs actual price info
   })
 }
 
