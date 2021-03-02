@@ -100,7 +100,6 @@ export class DbAccess {
   //       ':attachmentUrl' : url,
   //     }
   //   }).promise()
-
   // }
 
 }

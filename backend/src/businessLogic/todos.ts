@@ -44,15 +44,15 @@ export async function updateTodo(
   await dbAccess.updateWatchItem(toDoUpdate, userId, currentTodoItem.createdAt)
 }
 
-export async function setTodoItemAttachmentUrl(
-  userId: string,
-  todoId: string,
-  url: string
-) {
-  const currentTodoItem: WatchItem = await dbAccess.getWatchItem(userId, todoId)
+// export async function setTodoItemAttachmentUrl(
+//   userId: string,
+//   todoId: string,
+//   url: string
+// ) {
+//   const currentTodoItem: WatchItem = await dbAccess.getWatchItem(userId, todoId)
   
-  await dbAccess.setTodoItemAttachmentUrl(userId, currentTodoItem.createdAt, url)
-}
+//   await dbAccess.setTodoItemAttachmentUrl(userId, currentTodoItem.createdAt, url)
+// }
 
 export async function deleteTodo(
   userId: string,
