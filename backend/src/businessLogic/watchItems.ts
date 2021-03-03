@@ -1,17 +1,45 @@
 import * as uuid from 'uuid'
 
 import { WatchItem } from '../models/WatchItem'
+import { WatchItemUpdateProvider } from '../models/WatchItemUpdateProvider'
 import { WatchItemUpdate } from '../models/WatchItemUpdate'
 import { DbAccess } from '../dataLayer/dbAccess'
 //import { deleteTodoItemAttachment } from '../dataLayer/fileAccess'
 import { CreateWatchItemRequest } from '../requests/CreateWatchItemRequest'
 import { UpdateWatchItemRequest } from '../requests/UpdateWatchItemRequest'
 
+import { createLogger } from '../utils/logger'
+
+const logger = createLogger('dbAccess')
+
+class YahooFinanceUpdateProvider extends WatchItemUpdateProvider {
+  yahooFinance: any
+  
+  constructor() { 
+    logger.info("Start construct YahooFinanceUpdateProvider...")
+    super()
+    this.yahooFinance = require('yahoo-finance')
+    logger.info("... Finished construct YahooFinanceUpdateProvider")
+  }
+
+  async getUpdate(ticker: string): Promise<WatchItemUpdate> {
+    logger.info("In getUpdate, getting quote...")
+    const quote = await this.yahooFinance.quote(ticker, ['price']);
+    logger.info(`... quote retrieved ${JSON.stringify(quote)}`)
+    const priceInfo = quote['price']
+    return { price: priceInfo['regularMarketPrice'],
+             timeStamp: priceInfo['regularMarketTime']}
+  }
+
+}
+
 const dbAccess = new DbAccess()
+const watchItemUpdateProvider = new YahooFinanceUpdateProvider()
 
 export async function getAllWatchItems(
   userId: string
 ) : Promise<WatchItem[]> {
+  await watchItemUpdateProvider.getUpdate('TSLA')
   return dbAccess.getAllWatchItems(userId)
 }
 
