@@ -40,8 +40,8 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
     this.setState({ newTicker: event.target.value })
   }
 
-  onEditButtonClick = (todoId: string) => {
-    this.props.history.push(`/todos/${todoId}/edit`)
+  onEditButtonClick = (watchId: string) => {
+    this.props.history.push(`/watchlist/${watchId}/edit`)
   }
 
   onWatchItemCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
@@ -173,8 +173,14 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
               <Grid.Column width={3} verticalAlign="middle">
                 {watchItem.ticker}
               </Grid.Column>
-              <Grid.Column width={10} verticalAlign="middle">
+              <Grid.Column width={4} verticalAlign="middle">
                 {watchItem.description}
+              </Grid.Column>
+              <Grid.Column width={3} verticalAlign="middle">
+                {watchItem.price}
+              </Grid.Column>
+              <Grid.Column width={3} verticalAlign="middle">
+                {watchItem.timeStamp}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
