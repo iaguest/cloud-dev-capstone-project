@@ -19,9 +19,9 @@ export async function getWatchItems(idToken: string): Promise<WatchItem[]> {
 
 export async function createWatchItem(
   idToken: string,
-  newWatchItemRequest: CreateWatchItemRequest
+  createWatchItemRequest: CreateWatchItemRequest
 ): Promise<WatchItem> {
-  const response = await Axios.post(`${apiEndpoint}/watchlist`,  JSON.stringify(newWatchItemRequest), {
+  const response = await Axios.post(`${apiEndpoint}/watchlist`,  JSON.stringify(createWatchItemRequest), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
@@ -33,9 +33,9 @@ export async function createWatchItem(
 export async function patchWatchItem(
   idToken: string,
   watchId: string,
-  updatedTodo: UpdateWatchItemRequest
+  updateWatchItemRequest: UpdateWatchItemRequest
 ): Promise<void> {
-  await Axios.patch(`${apiEndpoint}/watchlist/${watchId}`, JSON.stringify(updatedTodo), {
+  await Axios.patch(`${apiEndpoint}/watchlist/${watchId}`, JSON.stringify(updateWatchItemRequest), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
