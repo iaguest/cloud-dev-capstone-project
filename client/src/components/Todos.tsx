@@ -14,9 +14,9 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createTodo, deleteTodo, getTodos, patchTodo } from '../api/todos-api'
+import { createWatchItem, deleteWatchItem, getWatchItems, patchWatchItem } from '../api/watchlist-api'
 import Auth from '../auth/Auth'
-import { Todo } from '../types/Todo'
+import { Todo } from '../types/WatchItem'
 
 interface TodosProps {
   auth: Auth
@@ -47,7 +47,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   onTodoCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
       const dueDate = this.calculateDueDate()
-      const newTodo = await createTodo(this.props.auth.getIdToken(), {
+      const newTodo = await createWatchItem(this.props.auth.getIdToken(), {
         name: this.state.newTodoName,
         dueDate
       })
@@ -62,7 +62,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
 
   onTodoDelete = async (todoId: string) => {
     try {
-      await deleteTodo(this.props.auth.getIdToken(), todoId)
+      await deleteWatchItem(this.props.auth.getIdToken(), todoId)
       this.setState({
         todos: this.state.todos.filter(todo => todo.todoId != todoId)
       })
@@ -74,7 +74,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   onTodoCheck = async (pos: number) => {
     try {
       const todo = this.state.todos[pos]
-      await patchTodo(this.props.auth.getIdToken(), todo.todoId, {
+      await patchWatchItem(this.props.auth.getIdToken(), todo.todoId, {
         name: todo.name,
         dueDate: todo.dueDate,
         done: !todo.done
@@ -91,7 +91,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
 
   async componentDidMount() {
     try {
-      const todos = await getTodos(this.props.auth.getIdToken())
+      const todos = await getWatchItems(this.props.auth.getIdToken())
       this.setState({
         todos,
         loadingTodos: false

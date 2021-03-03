@@ -1,27 +1,27 @@
 import { apiEndpoint } from '../config'
-import { Todo } from '../types/Todo';
-import { CreateTodoRequest } from '../types/CreateTodoRequest';
+import { WatchItem } from '../types/WatchItem';
+import { CreateWatchItemRequest } from '../types/CreateWatchItemRequest';
 import Axios from 'axios'
-import { UpdateTodoRequest } from '../types/UpdateTodoRequest';
+import { UpdateWatchItemRequest } from '../types/UpdateWatchItemRequest';
 
-export async function getTodos(idToken: string): Promise<Todo[]> {
-  console.log('Fetching todos')
+export async function getWatchItems(idToken: string): Promise<WatchItem[]> {
+  console.log('Fetching watch items')
 
-  const response = await Axios.get(`${apiEndpoint}/todos`, {
+  const response = await Axios.get(`${apiEndpoint}/watchlist`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
     },
   })
-  console.log('Todos:', response.data)
+  console.log('watch items:', response.data)
   return response.data.items
 }
 
-export async function createTodo(
+export async function createWatchItem(
   idToken: string,
-  newTodo: CreateTodoRequest
-): Promise<Todo> {
-  const response = await Axios.post(`${apiEndpoint}/todos`,  JSON.stringify(newTodo), {
+  newWatchItemRequest: CreateWatchItemRequest
+): Promise<WatchItem> {
+  const response = await Axios.post(`${apiEndpoint}/watchlist`,  JSON.stringify(newWatchItemRequest), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
@@ -30,12 +30,12 @@ export async function createTodo(
   return response.data.item
 }
 
-export async function patchTodo(
+export async function patchWatchItem(
   idToken: string,
-  todoId: string,
-  updatedTodo: UpdateTodoRequest
+  watchId: string,
+  updatedTodo: UpdateWatchItemRequest
 ): Promise<void> {
-  await Axios.patch(`${apiEndpoint}/todos/${todoId}`, JSON.stringify(updatedTodo), {
+  await Axios.patch(`${apiEndpoint}/watchlist/${watchId}`, JSON.stringify(updatedTodo), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
@@ -43,11 +43,11 @@ export async function patchTodo(
   })
 }
 
-export async function deleteTodo(
+export async function deleteWatchItem(
   idToken: string,
-  todoId: string
+  watchId: string
 ): Promise<void> {
-  await Axios.delete(`${apiEndpoint}/todos/${todoId}`, {
+  await Axios.delete(`${apiEndpoint}/watchlist/${watchId}`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
