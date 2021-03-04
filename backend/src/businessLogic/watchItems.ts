@@ -51,17 +51,16 @@ export async function createWatchItem(
   
   const ticker = createWatchItemRequest.ticker
 
-  // TODO: Populate using data from this info provider
-  await watchItemInfoProvider.getInfo(ticker)
+  const info = await watchItemInfoProvider.getInfo(ticker)
 
   return await dbAccess.createWatchItem({
     userId: userId,
     watchId: uuid.v4(),
     ticker: ticker,
-    description: 'my description',                    // HACK XXX: Needs data supplying
-    price: 1234.0,                                    // HACK XXX: Needs data supplying
-    currency: 'USD',                                  // HACK XXX: Needs data supplying
-    timeStamp: new Date().toISOString(),              // HACK XXX: Needs data supplying
+    description: info.description,
+    price: info.price,
+    currency: info.currency,
+    timeStamp: info.timeStamp,
     alertPrice: null,
     previousPrice: null
   })
