@@ -1,18 +1,17 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "update watchItem",
-    "type": "object",
-    "properties": {
-      "price": {
-        "type": "number"
-      },
-      "timeStamp": {
-        "type": "string"
-      }
-    },
-    "required": [
-      "price",
-      "timeStamp"
-    ],
-    "additionalProperties": false
-  }
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "update watchItem",
+  "type": "object",
+  "properties": {
+    "alertPrice": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "number" }
+      ]
+    }
+  },
+  "required": [
+    "alertPrice"
+  ],
+  "additionalProperties": false
+}

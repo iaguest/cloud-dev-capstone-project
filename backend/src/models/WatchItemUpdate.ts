@@ -1,4 +1,3 @@
 export interface WatchItemUpdate {
-  price: number
-  timeStamp: string
+  alertPrice?: number	
 }

@@ -1,7 +1,8 @@
 import * as uuid from 'uuid'
 
 import { WatchItem } from '../models/WatchItem'
-import { WatchItemUpdateProvider } from '../models/WatchItemUpdateProvider'
+import { WatchItemInfo } from '../models/WatchItemInfo'
+import { WatchItemInfoProvider } from '../models/WatchItemInfoProvider'
 import { WatchItemUpdate } from '../models/WatchItemUpdate'
 import { DbAccess } from '../dataLayer/dbAccess'
 //import { deleteTodoItemAttachment } from '../dataLayer/fileAccess'
@@ -12,7 +13,7 @@ import { createLogger } from '../utils/logger'
 
 const logger = createLogger('dbAccess')
 
-class YahooFinanceUpdateProvider extends WatchItemUpdateProvider {
+class YahooFinanceInfoProvider extends WatchItemInfoProvider {
   yahooFinance: any
   
   constructor() { 
@@ -22,24 +23,24 @@ class YahooFinanceUpdateProvider extends WatchItemUpdateProvider {
     logger.info("... Finished construct YahooFinanceUpdateProvider")
   }
 
-  async getUpdate(ticker: string): Promise<WatchItemUpdate> {
+  async getInfo(ticker: string): Promise<WatchItemInfo> {
     logger.info("In getUpdate, getting quote...")
     const quote = await this.yahooFinance.quote(ticker, ['price']);
     logger.info(`... quote retrieved ${JSON.stringify(quote)}`)
     const priceInfo = quote['price']
-    return { price: priceInfo['regularMarketPrice'],
+    return { description: priceInfo['shortName'],
+             price: priceInfo['regularMarketPrice'],
+             currency: priceInfo['currency'],
              timeStamp: priceInfo['regularMarketTime']}
   }
-
 }
 
 const dbAccess = new DbAccess()
-const watchItemUpdateProvider = new YahooFinanceUpdateProvider()
+const watchItemInfoProvider = new YahooFinanceInfoProvider()
 
 export async function getAllWatchItems(
   userId: string
 ) : Promise<WatchItem[]> {
-  await watchItemUpdateProvider.getUpdate('TSLA')
   return dbAccess.getAllWatchItems(userId)
 }
 
@@ -47,13 +48,22 @@ export async function createWatchItem(
   createWatchItemRequest: CreateWatchItemRequest,
   userId: string
 ) : Promise<WatchItem> {
+  
+  const ticker = createWatchItemRequest.ticker
+
+  // TODO: Populate using data from this info provider
+  await watchItemInfoProvider.getInfo(ticker)
+
   return await dbAccess.createWatchItem({
     userId: userId,
     watchId: uuid.v4(),
-    ticker: createWatchItemRequest.ticker,
-    description: createWatchItemRequest.description,
-    timeStamp: new Date().toISOString(),              // HACK XXX: Needs time relating to price info
-    price: 1234.0                                     // HACK XXX: Needs actual price info
+    ticker: ticker,
+    description: 'my description',                    // HACK XXX: Needs data supplying
+    price: 1234.0,                                    // HACK XXX: Needs data supplying
+    currency: 'USD',                                  // HACK XXX: Needs data supplying
+    timeStamp: new Date().toISOString(),              // HACK XXX: Needs data supplying
+    alertPrice: null,
+    previousPrice: null
   })
 }
 

@@ -13,6 +13,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   const newWatchItem: CreateWatchItemRequest = JSON.parse(event.body)
 
+  // TODO: Should check here that not trying to create watch for preexisting ticker
   const newItem = await createWatchItem(newWatchItem, getUserId(event))
   const { userId, ...item } = newItem
 
