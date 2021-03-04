@@ -51,16 +51,16 @@ export async function createWatchItem(
   
   const ticker = createWatchItemRequest.ticker
 
-  const info = await watchItemInfoProvider.getInfo(ticker)
+  const itemInfo = await watchItemInfoProvider.getInfo(ticker)
 
   return await dbAccess.createWatchItem({
     userId: userId,
     watchId: uuid.v4(),
     ticker: ticker,
-    description: info.description,
-    price: info.price,
-    currency: info.currency,
-    timeStamp: info.timeStamp,
+    description: itemInfo.description,
+    price: itemInfo.price,
+    currency: itemInfo.currency,
+    timeStamp: itemInfo.timeStamp,
     alertPrice: null,
     previousPrice: null
   })
