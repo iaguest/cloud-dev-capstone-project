@@ -76,7 +76,7 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
     try {
       const watchItem = this.state.watchItems[pos]
       await patchWatchItem(this.props.auth.getIdToken(), watchItem.watchId, {
-        alertPrice: watchItem.alertPrice,
+        alertPrice: watchItem.price,
       })
       this.setState({
         watchItems: update(this.state.watchItems, {
@@ -162,13 +162,13 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
         {this.state.watchItems.map((watchItem, pos) => {
           return (
             <Grid.Row key={watchItem.watchId}>
-              <Grid.Column width={1} verticalAlign="middle">
+              {/* <Grid.Column width={1} verticalAlign="middle">
                 <Checkbox
                   onChange={() => this.onWatchItemCheck(pos)}
                   // HACK XXX: Any use for this?
                   // checked={watchItem.done}
                 />
-              </Grid.Column>
+              </Grid.Column> */}
               <Grid.Column width={3} verticalAlign="middle">
                 {watchItem.ticker}
               </Grid.Column>
@@ -176,7 +176,7 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
                 {watchItem.description}
               </Grid.Column>
               <Grid.Column width={3} verticalAlign="middle">
-                {watchItem.price}
+                {watchItem.price.toFixed(2)}{watchItem.currency} {(watchItem.alertPrice ? `[${watchItem.alertPrice.toFixed(2)}]` : '')}
               </Grid.Column>
               <Grid.Column width={3} verticalAlign="middle">
                 {watchItem.timeStamp}
