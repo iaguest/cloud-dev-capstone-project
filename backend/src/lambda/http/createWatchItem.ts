@@ -5,16 +5,33 @@ import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } f
 import { CreateWatchItemRequest } from '../../requests/CreateWatchItemRequest'
 import { createWatchItem } from '../../businessLogic/watchItems'
 import { getUserId } from '../utils'
+import { WatchItem } from '../../models/WatchItem'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('Processing event: ', event)
 
-  // TODO: Implement creating a new watch item
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Credentials': true
+  }
 
   const newWatchItem: CreateWatchItemRequest = JSON.parse(event.body)
+  let newItem: WatchItem = undefined
 
-  // TODO: Should check here that not trying to create watch for preexisting ticker
-  const newItem = await createWatchItem(newWatchItem, getUserId(event))
+  try {
+    newItem = await createWatchItem(newWatchItem, getUserId(event))
+  }
+  catch (e) {
+    return {
+      statusCode: 400,
+      headers: headers,
+      body: JSON.stringify({
+        error: `Create failed: ${e.message}`
+      })
+    }   
+  }
+
+
   const { userId, previousPrice, ...item } = newItem
 
   return {

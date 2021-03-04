@@ -31,7 +31,7 @@ class YahooFinanceInfoProvider extends WatchItemInfoProvider {
     return { description: priceInfo['shortName'],
              price: priceInfo['regularMarketPrice'],
              currency: priceInfo['currency'],
-             timeStamp: priceInfo['regularMarketTime']}
+             timeStamp: priceInfo['regularMarketTime'].toISOString() }
   }
 }
 
