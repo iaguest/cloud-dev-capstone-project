@@ -76,8 +76,7 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
     try {
       const watchItem = this.state.watchItems[pos]
       await patchWatchItem(this.props.auth.getIdToken(), watchItem.watchId, {
-        price: watchItem.price,
-        timeStamp: watchItem.timeStamp,
+        alertPrice: watchItem.alertPrice,
       })
       this.setState({
         watchItems: update(this.state.watchItems, {

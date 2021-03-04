@@ -15,7 +15,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   // TODO: Should check here that not trying to create watch for preexisting ticker
   const newItem = await createWatchItem(newWatchItem, getUserId(event))
-  const { userId, ...item } = newItem
+  const { userId, previousPrice, ...item } = newItem
 
   return {
     statusCode: 201,
