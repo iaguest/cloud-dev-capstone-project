@@ -27,7 +27,6 @@ functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
-  # TODO: Configure this function
   GetWatchItems:
     handler: src/lambda/http/getWatchItems.handler
     events:
@@ -42,7 +41,6 @@ functions:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WATCH_TABLE}
 
-  # TODO: Configure this function
   CreateWatchItem:
     handler: src/lambda/http/createWatchItem.handler
     events:
@@ -61,7 +59,6 @@ functions:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WATCH_TABLE}
 
-  # TODO: Configure this function
   UpdateWatchItem:
     handler: src/lambda/http/updateWatchItem.handler
     events:
@@ -93,10 +90,6 @@ functions:
           path: watchlist/{watchId}/refresh
           cors: true
           authorizer: Auth
-          # TODO: Check validation works properly
-          # request:
-          #   schema:
-          #     application/json: ${file(models/refreshwatchitem-request.json)}
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -108,7 +101,6 @@ functions:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WATCH_TABLE}/index/${self:provider.environment.INDEX_NAME}
 
-  # TODO: Configure this function
   DeleteWatchItem:
     handler: src/lambda/http/deleteWatchItem.handler
     events:
@@ -158,7 +150,6 @@ functions:
 
 resources:
   Resources:
-    # TODO: Add any necessary AWS resources
     TodosDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
