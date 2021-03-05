@@ -55,20 +55,20 @@ export async function updateWatchItem(
   await dbAccess.updateWatchItem(watchItemUpdate, userId, currentWatchItem.ticker)
 }
 
-export async function refreshWatchItem(
-  userId: string,
-  watchId: string
-) {
-  const currentWatchItem: WatchItem = await dbAccess.getWatchItem(userId, watchId)
+export async function refreshWatchItems(userId: string) {
 
-  const ticker = currentWatchItem.ticker
-  const itemInfo = await watchItemInfoProvider.getInfo(ticker)
+  const currentWatchItems = await getAllWatchItems(userId)
 
-  const watchItemRefresh: WatchItemRefresh = {
-    ...itemInfo
-  }
+  currentWatchItems.forEach(async currentWatchItem => {
+    const ticker = currentWatchItem.ticker
+    const itemInfo = await watchItemInfoProvider.getInfo(ticker)
 
-  await dbAccess.refreshWatchItem(watchItemRefresh, userId, ticker)
+    const watchItemRefresh: WatchItemRefresh = {
+      ...itemInfo
+    }
+
+    await dbAccess.refreshWatchItem(watchItemRefresh, userId, ticker)    
+  });
 }
 
 // export async function setTodoItemAttachmentUrl(

@@ -83,11 +83,11 @@ functions:
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WATCH_TABLE}/index/${self:provider.environment.INDEX_NAME}
 
   RefreshWatchItem:
-    handler: src/lambda/http/refreshWatchItem.handler
+    handler: src/lambda/http/refreshWatchItems.handler
     events:
       - http:
           method: post
-          path: watchlist/{watchId}/refresh
+          path: watchlist/refresh
           cors: true
           authorizer: Auth
     iamRoleStatements:

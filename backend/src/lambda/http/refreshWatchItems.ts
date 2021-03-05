@@ -3,11 +3,9 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 
 import { getUserId } from '../utils'
-import { refreshWatchItem } from '../../businessLogic/watchItems'
+import { refreshWatchItems } from '../../businessLogic/watchItems'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-
-  const watchId = event.pathParameters.watchId
 
   const userId: string = getUserId(event)
   const headers = {
@@ -16,7 +14,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   }
 
   try {
-    await refreshWatchItem(userId, watchId)
+    await refreshWatchItems(userId)
   }
   catch (e) {
     return {
