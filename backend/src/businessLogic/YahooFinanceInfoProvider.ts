@@ -1,6 +1,8 @@
 import { WatchItemInfo } from '../models/WatchItemInfo';
 import { WatchItemInfoProvider } from '../models/WatchItemInfoProvider';
-import { logger } from './watchItems';
+import { createLogger } from '../utils/logger'
+
+export const logger = createLogger('YahooFinanceInfoProvider')
 
 export class YahooFinanceInfoProvider extends WatchItemInfoProvider {
   yahooFinance: any;
@@ -13,7 +15,7 @@ export class YahooFinanceInfoProvider extends WatchItemInfoProvider {
   }
 
   async getInfo(ticker: string): Promise<WatchItemInfo> {
-    logger.info("In getUpdate, getting quote...");
+    logger.info(`In getInfo, getting quote for ${ticker}...`);
     const quote = await this.yahooFinance.quote(ticker, ['price']);
     logger.info(`... quote retrieved ${JSON.stringify(quote)}`);
     const priceInfo = quote['price'];

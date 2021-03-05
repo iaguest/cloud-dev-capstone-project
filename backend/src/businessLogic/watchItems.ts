@@ -8,10 +8,7 @@ import { DbAccess } from '../dataLayer/dbAccess'
 import { CreateWatchItemRequest } from '../requests/CreateWatchItemRequest'
 import { UpdateWatchItemRequest } from '../requests/UpdateWatchItemRequest'
 
-import { createLogger } from '../utils/logger'
 import { YahooFinanceInfoProvider } from './YahooFinanceInfoProvider'
-
-export const logger = createLogger('dbAccess')
 
 const dbAccess = new DbAccess()
 const watchItemInfoProvider = new YahooFinanceInfoProvider()
