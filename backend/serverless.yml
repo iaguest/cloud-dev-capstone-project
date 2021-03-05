@@ -82,7 +82,7 @@ functions:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WATCH_TABLE}/index/${self:provider.environment.INDEX_NAME}
 
-  RefreshWatchItem:
+  RefreshWatchItems:
     handler: src/lambda/http/refreshWatchItems.handler
     events:
       - http:
@@ -123,6 +123,12 @@ functions:
         Action:
           - s3:DeleteObject
         Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENTS_S3_BUCKET}/*
+
+  cron:
+    handler: handler.run
+    events:
+      # Invoke Lambda function every minute
+      - schedule: rate(1 minute)
 
   # TODO: Configure this function
   # GenerateUploadUrl:
