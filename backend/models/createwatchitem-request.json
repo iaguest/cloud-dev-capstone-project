@@ -5,14 +5,10 @@
   "properties": {
     "ticker": {
       "type": "string"
-    },
-    "description": {
-      "type": "string"
     }
   },
   "required": [
-    "ticker",
-    "description"
+    "ticker"
   ],
   "additionalProperties": false
 }
