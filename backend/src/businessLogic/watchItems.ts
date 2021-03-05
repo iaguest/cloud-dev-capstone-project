@@ -1,8 +1,6 @@
 import * as uuid from 'uuid'
 
 import { WatchItem } from '../models/WatchItem'
-import { WatchItemInfo } from '../models/WatchItemInfo'
-import { WatchItemInfoProvider } from '../models/WatchItemInfoProvider'
 import { WatchItemUpdate } from '../models/WatchItemUpdate'
 import { DbAccess } from '../dataLayer/dbAccess'
 //import { deleteTodoItemAttachment } from '../dataLayer/fileAccess'
@@ -10,30 +8,9 @@ import { CreateWatchItemRequest } from '../requests/CreateWatchItemRequest'
 import { UpdateWatchItemRequest } from '../requests/UpdateWatchItemRequest'
 
 import { createLogger } from '../utils/logger'
+import { YahooFinanceInfoProvider } from './YahooFinanceInfoProvider'
 
-const logger = createLogger('dbAccess')
-
-class YahooFinanceInfoProvider extends WatchItemInfoProvider {
-  yahooFinance: any
-  
-  constructor() { 
-    logger.info("Start construct YahooFinanceUpdateProvider...")
-    super()
-    this.yahooFinance = require('yahoo-finance')
-    logger.info("... Finished construct YahooFinanceUpdateProvider")
-  }
-
-  async getInfo(ticker: string): Promise<WatchItemInfo> {
-    logger.info("In getUpdate, getting quote...")
-    const quote = await this.yahooFinance.quote(ticker, ['price']);
-    logger.info(`... quote retrieved ${JSON.stringify(quote)}`)
-    const priceInfo = quote['price']
-    return { description: priceInfo['shortName'],
-             price: priceInfo['regularMarketPrice'],
-             currency: priceInfo['currency'],
-             timeStamp: priceInfo['regularMarketTime'].toISOString() }
-  }
-}
+export const logger = createLogger('dbAccess')
 
 const dbAccess = new DbAccess()
 const watchItemInfoProvider = new YahooFinanceInfoProvider()
@@ -57,12 +34,9 @@ export async function createWatchItem(
     userId: userId,
     watchId: uuid.v4(),
     ticker: ticker,
-    description: itemInfo.description,
-    price: itemInfo.price,
-    currency: itemInfo.currency,
-    timeStamp: itemInfo.timeStamp,
     alertPrice: null,
-    previousPrice: null
+    previousPrice: null,
+    ...itemInfo
   })
 }
 
