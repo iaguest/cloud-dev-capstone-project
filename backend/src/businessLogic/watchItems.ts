@@ -1,6 +1,7 @@
 import * as uuid from 'uuid'
 
 import { WatchItem } from '../models/WatchItem'
+import { WatchItemRefresh } from '../models/WatchItemRefresh'
 import { WatchItemUpdate } from '../models/WatchItemUpdate'
 import { DbAccess } from '../dataLayer/dbAccess'
 //import { deleteTodoItemAttachment } from '../dataLayer/fileAccess'
@@ -45,13 +46,29 @@ export async function updateWatchItem(
   userId: string,
   watchId: string
 ) {
-  const watchItemUpdate : WatchItemUpdate = {
+  const watchItemUpdate: WatchItemUpdate = {
     ...updateWatchItemRequest,
   }
 
   const currentWatchItem: WatchItem = await dbAccess.getWatchItem(userId, watchId)
 
   await dbAccess.updateWatchItem(watchItemUpdate, userId, currentWatchItem.ticker)
+}
+
+export async function refreshWatchItem(
+  userId: string,
+  watchId: string
+) {
+  const currentWatchItem: WatchItem = await dbAccess.getWatchItem(userId, watchId)
+
+  const ticker = currentWatchItem.ticker
+  const itemInfo = await watchItemInfoProvider.getInfo(ticker)
+
+  const watchItemRefresh: WatchItemRefresh = {
+    ...itemInfo
+  }
+
+  await dbAccess.refreshWatchItem(watchItemRefresh, userId, ticker)
 }
 
 // export async function setTodoItemAttachmentUrl(

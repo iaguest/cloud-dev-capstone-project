@@ -2,6 +2,7 @@ import * as AWS  from 'aws-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 
 import { WatchItem } from '../models/WatchItem'
+import { WatchItemRefresh } from '../models/WatchItemRefresh'
 import { WatchItemUpdate } from '../models/WatchItemUpdate'
 
 import { createLogger } from '../utils/logger'
@@ -71,6 +72,25 @@ export class DbAccess {
       UpdateExpression: 'set alertPrice = :alertPrice',
       ExpressionAttributeValues: {
         ':alertPrice' : watchUpdate.alertPrice,
+      }
+    }).promise()
+  }
+
+  async refreshWatchItem(watchRefresh: WatchItemRefresh, userId: string, ticker: string) {
+    logger.info("In refreshWatchItem...")
+    await this.docClient.update({
+      TableName: this.watchTable,
+      Key: {
+        'userId' : userId,
+        'ticker' : ticker
+      },
+      UpdateExpression: 'set #ts = :ts, price = :price',
+      ExpressionAttributeNames: {
+        "#ts": "timeStamp"
+      },
+      ExpressionAttributeValues: {
+        ':price' : watchRefresh.price,
+        ':ts' : watchRefresh.timeStamp,
       }
     }).promise()
   }

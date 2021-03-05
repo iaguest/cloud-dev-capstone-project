@@ -85,6 +85,29 @@ functions:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WATCH_TABLE}/index/${self:provider.environment.INDEX_NAME}
 
+  RefreshWatchItem:
+    handler: src/lambda/http/refreshWatchItem.handler
+    events:
+      - http:
+          method: post
+          path: watchlist/{watchId}/refresh
+          cors: true
+          authorizer: Auth
+          # TODO: Check validation works properly
+          # request:
+          #   schema:
+          #     application/json: ${file(models/refreshwatchitem-request.json)}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WATCH_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WATCH_TABLE}/index/${self:provider.environment.INDEX_NAME}
+
   # TODO: Configure this function
   DeleteWatchItem:
     handler: src/lambda/http/deleteWatchItem.handler
