@@ -8,10 +8,10 @@ import { DbAccess } from '../dataLayer/dbAccess'
 import { CreateWatchItemRequest } from '../requests/CreateWatchItemRequest'
 import { UpdateWatchItemRequest } from '../requests/UpdateWatchItemRequest'
 
-import { MockFinanceInfoProvider } from './infoProviders'
+import { YahooFinanceInfoProvider } from './infoProviders'
 
 const dbAccess = new DbAccess()
-const watchItemInfoProvider = new MockFinanceInfoProvider()
+const watchItemInfoProvider = new YahooFinanceInfoProvider()
 
 export async function getWatchItems(
   userId: string
