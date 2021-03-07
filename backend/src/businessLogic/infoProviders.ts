@@ -2,14 +2,33 @@ import { WatchItemInfo } from '../models/WatchItemInfo';
 import { WatchItemInfoProvider } from '../models/WatchItemInfoProvider';
 import { createLogger } from '../utils/logger'
 
-export const logger = createLogger('YahooFinanceInfoProvider')
+export const logger = createLogger('infoProvider')
+
+export class MockFinanceInfoProvider extends WatchItemInfoProvider {
+
+  constructor() {
+    logger.info("Start construct MockFinanceInfoProvider...")
+    super()
+    logger.info("... Finished construct MockFinanceInfoProvider")
+  }
+
+  async getInfo(ticker: string): Promise<WatchItemInfo> {
+    logger.info(`In getInfo, getting mock info for ${ticker}...`);
+    return {
+      description: `${ticker} description`,
+      price: Math.floor(Math.random() * 11),
+      currency: 'USD',
+      timeStamp: new Date().toISOString()
+    };
+  }
+}
 
 export class YahooFinanceInfoProvider extends WatchItemInfoProvider {
   yahooFinance: any;
 
   constructor() {
     logger.info("Start construct YahooFinanceUpdateProvider...");
-    super();
+    super()
     this.yahooFinance = require('yahoo-finance');
     logger.info("... Finished construct YahooFinanceUpdateProvider");
   }

@@ -8,10 +8,10 @@ import { DbAccess } from '../dataLayer/dbAccess'
 import { CreateWatchItemRequest } from '../requests/CreateWatchItemRequest'
 import { UpdateWatchItemRequest } from '../requests/UpdateWatchItemRequest'
 
-import { WatchItemInfoProvider } from '../models/WatchItemInfoProvider'
-import { YahooFinanceInfoProvider } from './YahooFinanceInfoProvider'
+import { MockFinanceInfoProvider } from './infoProviders'
 
 const dbAccess = new DbAccess()
+const watchItemInfoProvider = new MockFinanceInfoProvider()
 
 export async function getWatchItems(
   userId: string
@@ -26,7 +26,6 @@ export async function createWatchItem(
   
   const ticker = createWatchItemRequest.ticker
 
-  const watchItemInfoProvider = new YahooFinanceInfoProvider()
   const itemInfo = await watchItemInfoProvider.getInfo(ticker)
 
   return await dbAccess.createWatchItem({
@@ -55,18 +54,16 @@ export async function updateWatchItem(
 
 export async function refreshAllWatchItems() {
   const allWatchItems = await dbAccess.getAllWatchItems()
-  const watchItemInfoProvider = new YahooFinanceInfoProvider()
-  await refreshItems(watchItemInfoProvider, allWatchItems)
+  await refreshItems(allWatchItems)
 }
 
 export async function refreshWatchItems(userId: string) {
 
   const userWatchItems = await getWatchItems(userId)
-  const watchItemInfoProvider = new YahooFinanceInfoProvider()
-  await refreshItems(watchItemInfoProvider, userWatchItems)
+  await refreshItems(userWatchItems)
 }
 
-async function refreshItems(watchItemInfoProvider: WatchItemInfoProvider, watchItems: WatchItem[]) {
+async function refreshItems(watchItems: WatchItem[]) {
   watchItems.forEach(async watchItem => {
     const ticker = watchItem.ticker
 
