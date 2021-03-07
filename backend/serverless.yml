@@ -124,11 +124,22 @@ functions:
           - s3:DeleteObject
         Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENTS_S3_BUCKET}/*
 
-  cron:
-    handler: handler.run
+  ScheduledRefresh:
+    handler: src/lambda/schedule/refreshAllWatchItems.handler
     events:
-      # Invoke Lambda function every minute
-      - schedule: rate(1 minute)
+      - schedule: rate(5 minutes)
+      # - schedule: cron(0 8-16 ? * MON-FRI *)
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+          - dynamodb:Scan
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WATCH_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WATCH_TABLE}/index/${self:provider.environment.INDEX_NAME}
+
 
   # TODO: Configure this function
   # GenerateUploadUrl:
@@ -156,7 +167,7 @@ functions:
 
 resources:
   Resources:
-    TodosDynamoDBTable:
+    WatchItemsDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:

@@ -13,10 +13,10 @@ import { YahooFinanceInfoProvider } from './YahooFinanceInfoProvider'
 const dbAccess = new DbAccess()
 const watchItemInfoProvider = new YahooFinanceInfoProvider()
 
-export async function getAllWatchItems(
+export async function getWatchItems(
   userId: string
 ) : Promise<WatchItem[]> {
-  return dbAccess.getAllWatchItems(userId)
+  return dbAccess.getWatchItems(userId)
 }
 
 export async function createWatchItem(
@@ -52,20 +52,28 @@ export async function updateWatchItem(
   await dbAccess.updateWatchItem(watchItemUpdate, userId, currentWatchItem.ticker)
 }
 
+export async function refreshAllWatchItems() {
+  const allWatchItems = await dbAccess.getAllWatchItems()
+  await refreshItems(allWatchItems)
+}
+
 export async function refreshWatchItems(userId: string) {
 
-  const currentWatchItems = await getAllWatchItems(userId)
+  const userWatchItems = await getWatchItems(userId)
+  await refreshItems(userWatchItems)
+}
 
-  currentWatchItems.forEach(async currentWatchItem => {
-    const ticker = currentWatchItem.ticker
+async function refreshItems(watchItems: WatchItem[]) {
+  watchItems.forEach(async watchItem => {
+    const ticker = watchItem.ticker
     const itemInfo = await watchItemInfoProvider.getInfo(ticker)
 
     const watchItemRefresh: WatchItemRefresh = {
       ...itemInfo
     }
 
-    await dbAccess.refreshWatchItem(watchItemRefresh, userId, ticker)    
-  });
+    await dbAccess.refreshWatchItem(watchItemRefresh, watchItem.userId, ticker)    
+  });  
 }
 
 // export async function setTodoItemAttachmentUrl(

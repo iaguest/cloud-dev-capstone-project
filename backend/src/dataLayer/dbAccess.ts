@@ -20,8 +20,25 @@ export class DbAccess {
     private readonly watchTableIndex = process.env.INDEX_NAME) {
   }
 
-  async getAllWatchItems(userId: string): Promise<WatchItem[]> {
+  // TODO: Re-assess use of scan here
+  async getAllWatchItems(): Promise<WatchItem[]> {
     logger.info("In getAllWatchItems...")
+
+    // Scan operation parameters
+    const scanParams = {
+      TableName: this.watchTable,
+      // Limit: limit,
+      // ExclusiveStartKey: nextKey
+    }
+
+    const result = await this.docClient.scan(scanParams).promise()
+
+    const items = result.Items
+    return items as WatchItem[]
+  }
+
+  async getWatchItems(userId: string): Promise<WatchItem[]> {
+    logger.info("In getWatchItems...")
     const result = await this.docClient.query({
       TableName: this.watchTable,
       KeyConditionExpression: 'userId = :userId',
