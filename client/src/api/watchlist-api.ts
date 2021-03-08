@@ -35,7 +35,11 @@ export async function patchWatchItem(
   watchId: string,
   updateWatchItemRequest: UpdateWatchItemRequest
 ): Promise<void> {
-  await Axios.patch(`${apiEndpoint}/watchlist/${watchId}`, JSON.stringify(updateWatchItemRequest), {
+  
+  const replacer = (key:any, value:any) =>
+    typeof value === 'undefined' ? null : value;
+  
+  await Axios.patch(`${apiEndpoint}/watchlist/${watchId}`, JSON.stringify(updateWatchItemRequest, replacer), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
