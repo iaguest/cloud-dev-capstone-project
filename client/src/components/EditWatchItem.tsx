@@ -1,13 +1,7 @@
 import * as React from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
-import { getUploadUrl, uploadFile } from '../api/watchlist-api'
-
-enum UploadState {
-  NoUpload,
-  FetchingPresignedUrl,
-  UploadingFile,
-}
+import { patchWatchItem } from '../api/watchlist-api'
 
 interface EditWatchItemProps {
   match: {
@@ -19,8 +13,7 @@ interface EditWatchItemProps {
 }
 
 interface EditWatchItemState {
-  file: any
-  uploadState: UploadState
+  alertPrice?: number
 }
 
 export class EditWatchItem extends React.PureComponent<
@@ -28,16 +21,13 @@ export class EditWatchItem extends React.PureComponent<
   EditWatchItemState
 > {
   state: EditWatchItemState = {
-    file: undefined,
-    uploadState: UploadState.NoUpload
+    alertPrice: undefined
   }
 
-  handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
-    if (!files) return
-
+  handleAlertPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const alertPrice = event.target.value
     this.setState({
-      file: files[0]
+      alertPrice: (alertPrice) ? parseFloat(alertPrice) : undefined
     })
   }
 
@@ -45,65 +35,30 @@ export class EditWatchItem extends React.PureComponent<
     event.preventDefault()
 
     try {
-      if (!this.state.file) {
-        alert('File should be selected')
-        return
-      }
-
-      this.setUploadState(UploadState.FetchingPresignedUrl)
-      const uploadUrl = await getUploadUrl(this.props.auth.getIdToken(), this.props.match.params.watchId)
-
-      this.setUploadState(UploadState.UploadingFile)
-      await uploadFile(uploadUrl, this.state.file)
-
-      alert('File was uploaded!')
+      await patchWatchItem(this.props.auth.getIdToken(),
+                           this.props.match.params.watchId,
+                           { alertPrice: this.state.alertPrice})
     } catch (e) {
-      alert('Could not upload a file: ' + e.message)
-    } finally {
-      this.setUploadState(UploadState.NoUpload)
+       alert('Could not set alert: ' + e.message)
     }
-  }
-
-  setUploadState(uploadState: UploadState) {
-    this.setState({
-      uploadState
-    })
   }
 
   render() {
     return (
       <div>
-        <h1>Upload new image</h1>
+        <h1>Set alert</h1>
 
         <Form onSubmit={this.handleSubmit}>
           <Form.Field>
-            <label>File</label>
+            <label>Price</label>
             <input
-              type="file"
-              accept="image/*"
-              placeholder="Image to upload"
-              onChange={this.handleFileChange}
+              type="text"
+              value={this.state.alertPrice || ''} 
+              onChange={this.handleAlertPriceChange}
             />
+            <input type="submit" value="Apply" />
           </Form.Field>
-
-          {this.renderButton()}
         </Form>
-      </div>
-    )
-  }
-
-  renderButton() {
-
-    return (
-      <div>
-        {this.state.uploadState === UploadState.FetchingPresignedUrl && <p>Uploading image metadata</p>}
-        {this.state.uploadState === UploadState.UploadingFile && <p>Uploading file</p>}
-        <Button
-          loading={this.state.uploadState !== UploadState.NoUpload}
-          type="submit"
-        >
-          Upload
-        </Button>
       </div>
     )
   }
