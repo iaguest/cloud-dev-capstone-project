@@ -14,7 +14,7 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createWatchItem, deleteWatchItem, getWatchItems, patchWatchItem } from '../api/watchlist-api'
+import { createWatchItem, deleteWatchItem, getWatchItems, patchWatchItem, refreshWatchList } from '../api/watchlist-api'
 import Auth from '../auth/Auth'
 import { WatchItem } from '../types/WatchItem'
 
@@ -42,6 +42,14 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
 
   onEditButtonClick = (watchId: string) => {
     this.props.history.push(`/watchlist/${watchId}/edit`)
+  }
+
+  onWatchListRefresh = async () => {
+    try {
+      const newWatchItem = await refreshWatchList(this.props.auth.getIdToken())
+    } catch (e) {
+      alert(`WatchList refresh failed: ${e.message}`)
+    }
   }
 
   onWatchItemCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
@@ -109,7 +117,7 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
         <Button
           icon
           color="blue"
-          onClick={() => {}}>
+          onClick={() => { this.onWatchListRefresh() }}>
           <Icon name="refresh" />
         </Button>   
         <Divider />         
