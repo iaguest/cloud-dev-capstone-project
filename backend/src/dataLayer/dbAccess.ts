@@ -94,7 +94,8 @@ export class DbAccess {
   }
 
   async refreshWatchItem(watchRefresh: WatchItemRefresh, userId: string, ticker: string) {
-    logger.info("In refreshWatchItem...")
+    logger.info(`In refreshWatchItem for userId ${userId}, ticker ${ticker}...`)
+    logger.info(`WatchItemRefresh obj: ${JSON.stringify(watchRefresh)}`)
     await this.docClient.update({
       TableName: this.watchTable,
       Key: {
@@ -110,6 +111,7 @@ export class DbAccess {
         ':ts' : watchRefresh.timeStamp,
       }
     }).promise()
+    logger.info("...completed refreshWatchItem")
   }
 
   async deleteWatchItem(userId: string, ticker: string) {
