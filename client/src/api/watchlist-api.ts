@@ -47,6 +47,18 @@ export async function patchWatchItem(
   })
 }
 
+export async function refreshWatchList(
+  idToken: string
+): Promise<void> {
+  const response = await Axios.post(`${apiEndpoint}/watchlist/refresh`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    }
+  })
+  return response.data.item  
+}
+
 export async function deleteWatchItem(
   idToken: string,
   watchId: string

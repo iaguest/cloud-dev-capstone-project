@@ -59,6 +59,7 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
     }
   }
 
+  
   onWatchItemDelete = async (watchId: string) => {
     try {
       await deleteWatchItem(this.props.auth.getIdToken(), watchId)
@@ -102,7 +103,16 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
   render() {
     return (
       <div>
+
         <Header as="h1">Watch List</Header>
+        <Divider />
+        <Button
+          icon
+          color="blue"
+          onClick={() => {}}>
+          <Icon name="refresh" />
+        </Button>   
+        <Divider />         
 
         {this.renderCreateWatchItemInput()}
 
