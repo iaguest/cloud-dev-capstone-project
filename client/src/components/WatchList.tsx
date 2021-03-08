@@ -48,9 +48,7 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
     try {
       // const dueDate = this.calculateDueDate()
       const newWatchItem = await createWatchItem(this.props.auth.getIdToken(), {
-        ticker: this.state.newTicker,
-        // HACK: XXX description needs setting properly
-        description: ''
+        ticker: this.state.newTicker
       })
       this.setState({
         watchItems: [...this.state.watchItems, newWatchItem],
