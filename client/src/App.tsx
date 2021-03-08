@@ -3,7 +3,7 @@ import { Link, Route, Router, Switch } from 'react-router-dom'
 import { Grid, Menu, Segment } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
-import { EditTodo } from './components/EditTodo'
+import { EditWatchItem } from './components/EditWatchItem'
 import { LogIn } from './components/LogIn'
 import { NotFound } from './components/NotFound'
 import { WatchList } from './components/WatchList'
@@ -97,10 +97,10 @@ export default class App extends Component<AppProps, AppState> {
         />
 
         <Route
-          path="/todos/:todoId/edit"
+          path="/watchlist/:watchId/edit"
           exact
           render={props => {
-            return <EditTodo {...props} auth={this.props.auth} />
+            return <EditWatchItem {...props} auth={this.props.auth} />
           }}
         />
 
