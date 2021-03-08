@@ -52,11 +52,13 @@ export async function updateWatchItem(
   await dbAccess.updateWatchItem(watchItemUpdate, userId, currentWatchItem.ticker)
 }
 
+// Refresh watch items for all users
 export async function refreshAllWatchItems() {
   const allWatchItems = await dbAccess.getAllWatchItems()
   await refreshItems(allWatchItems)
 }
 
+// Refresh watch items for a single user
 export async function refreshWatchItems(userId: string) {
 
   const userWatchItems = await getWatchItems(userId)
