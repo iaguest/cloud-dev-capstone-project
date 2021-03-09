@@ -5,12 +5,8 @@ import { WatchItem } from '../models/WatchItem'
 import { WatchItemRefresh } from '../models/WatchItemRefresh'
 import { WatchItemUpdate } from '../models/WatchItemUpdate'
 
-import { createLogger } from '../utils/logger'
-
 // const AWSXRay = require('aws-xray-sdk')
 // const XAWS = AWSXRay.captureAWS(AWS)
-
-const logger = createLogger('dbAccess')
 
 export class DbAccess {
 
@@ -22,7 +18,7 @@ export class DbAccess {
 
   // TODO: Re-assess use of scan here
   async getAllWatchItems(): Promise<WatchItem[]> {
-    logger.info(`In getAllWatchItems...`)
+    console.log(`In getAllWatchItems...`)
 
     // Scan operation parameters
     const scanParams = {
@@ -34,13 +30,13 @@ export class DbAccess {
     const result = await this.docClient.scan(scanParams).promise()
 
     const items = result.Items
-    logger.info(`query result.Items are ${JSON.stringify(items)}`)
+    console.log(`query result.Items are ${JSON.stringify(items)}`)
 
     return items as WatchItem[]
   }
 
   async getWatchItems(userId: string): Promise<WatchItem[]> {
-    logger.info(`In getWatchItems for userId ${userId}...`)
+    console.log(`In getWatchItems for userId ${userId}...`)
     const result = await this.docClient.query({
       TableName: this.watchTable,
       KeyConditionExpression: 'userId = :userId',
@@ -51,13 +47,13 @@ export class DbAccess {
     }).promise()
 
     const items = result.Items
-    logger.info(`query result.Items are ${JSON.stringify(items)}`)
+    console.log(`query result.Items are ${JSON.stringify(items)}`)
 
     return items as WatchItem[]
   }
 
   async getWatchItem(userId: string, watchId: string) : Promise<WatchItem> {
-    logger.info(`In getWatchItem for userId ${userId}...`)
+    console.log(`In getWatchItem for userId ${userId}...`)
     const result = await this.docClient.query({
       TableName : this.watchTable,
       IndexName : this.watchTableIndex,
@@ -69,14 +65,14 @@ export class DbAccess {
     }).promise()
 
     const items = result.Items
-    logger.info(`query result.Items are ${JSON.stringify(items)}`)
+    console.log(`query result.Items are ${JSON.stringify(items)}`)
 
     const item = items[0]
     return item as WatchItem
   }
 
   async createWatchItem(watchItem: WatchItem): Promise<WatchItem> {
-    logger.info("In createWatchItem...")
+    console.log("In createWatchItem...")
     await this.docClient.put({
       TableName: this.watchTable,
       Item: watchItem
@@ -86,7 +82,7 @@ export class DbAccess {
   }
 
   async updateWatchItem(watchUpdate: WatchItemUpdate, userId: string, ticker: string) {
-    logger.info("In updateWatchItem...")
+    console.log("In updateWatchItem...")
     await this.docClient.update({
       TableName: this.watchTable,
       Key: {
@@ -101,8 +97,8 @@ export class DbAccess {
   }
 
   async refreshWatchItem(watchRefresh: WatchItemRefresh, userId: string, ticker: string) {
-    logger.info(`In refreshWatchItem for userId ${userId}, ticker ${ticker}...`)
-    logger.info(`WatchItemRefresh obj: ${JSON.stringify(watchRefresh)}`)
+    console.log(`In refreshWatchItem for userId ${userId}, ticker ${ticker}...`)
+    console.log(`WatchItemRefresh obj: ${JSON.stringify(watchRefresh)}`)
     await this.docClient.update({
       TableName: this.watchTable,
       Key: {
@@ -119,11 +115,11 @@ export class DbAccess {
         ':ts' : watchRefresh.timeStamp,
       }
     }).promise()
-    logger.info("...completed refreshWatchItem")
+    console.log("...completed refreshWatchItem")
   }
 
   async deleteWatchItem(userId: string, ticker: string) {
-    logger.info("In deleteWatchItem...")
+    console.log("In deleteWatchItem...")
     await this.docClient.delete({
       TableName: this.watchTable,
       Key: {

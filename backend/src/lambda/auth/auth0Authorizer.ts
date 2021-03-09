@@ -2,14 +2,11 @@ import { CustomAuthorizerEvent, CustomAuthorizerResult } from 'aws-lambda'
 import 'source-map-support/register'
 
 import { verify, decode } from 'jsonwebtoken'
-import { createLogger } from '../../utils/logger'
 import Axios from 'axios'
 import { Jwt } from '../../auth/Jwt'
 import { JwtPayload } from '../../auth/JwtPayload'
 
 var jwkToPem = require('jwk-to-pem');
-
-const logger = createLogger('auth')
 
 // TODO: Provide a URL that can be used to download a certificate that can be used
 // to verify JWT token signature.
@@ -19,10 +16,10 @@ const jwksUrl = 'https://dev-pgq4cwul.us.auth0.com/.well-known/jwks.json'
 export const handler = async (
   event: CustomAuthorizerEvent
 ): Promise<CustomAuthorizerResult> => {
-  logger.info('Authorizing a user', event.authorizationToken)
+  console.log('Authorizing a user', event.authorizationToken)
   try {
     const jwtToken = await verifyToken(event.authorizationToken)
-    logger.info('User was authorized', jwtToken)
+    console.log('User was authorized', jwtToken)
 
     return {
       principalId: jwtToken.sub,
@@ -38,7 +35,7 @@ export const handler = async (
       }
     }
   } catch (e) {
-    logger.error('User not authorized', { error: e.message })
+    console.log('User not authorized', { error: e.message })
 
     return {
       principalId: 'user',
@@ -57,20 +54,20 @@ export const handler = async (
 }
 
 async function verifyToken(authHeader: string): Promise<JwtPayload> {
-  logger.info('Decode json web token from auth header...')
+  console.log('Decode json web token from auth header...')
   const token = getToken(authHeader)
   const jwt: Jwt = decode(token, { complete: true }) as Jwt
 
-  logger.info('Download json web keys...')
+  console.log('Download json web keys...')
   const response = await Axios(jwksUrl);
 
-  logger.info('Extract relevant json web key for app...')
+  console.log('Extract relevant json web key for app...')
   const jwk = response.data.keys.find((element: { kid: string }) => element.kid === jwt.header.kid)
 
   // TODO: Implement token verification
   // You should implement it similarly to how it was implemented for the exercise for the lesson 5
   // You can read more about how to do this here: https://auth0.com/blog/navigating-rs256-and-jwks/
-  logger.info('Verify the token...')
+  console.log('Verify the token...')
   return verify(
     token,                      // Token from an HTTP header to validate
     jwkToPem(jwk),              // Certificate built from JSON web key
