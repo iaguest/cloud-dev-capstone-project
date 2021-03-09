@@ -43,7 +43,6 @@ export class DbAccess {
       ExpressionAttributeValues: {
         ':userId': userId
       },
-      ScanIndexForward: false
     }).promise()
 
     const items = result.Items

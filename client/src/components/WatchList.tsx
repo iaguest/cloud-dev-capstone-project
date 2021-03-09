@@ -47,6 +47,7 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
   onWatchListRefresh = async () => {
     try {
       const newWatchItem = await refreshWatchList(this.props.auth.getIdToken())
+      this.componentDidMount()
     } catch (e) {
       alert(`WatchList refresh failed: ${e.message}`)
     }
@@ -54,19 +55,15 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
 
   onWatchItemCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
-      // const dueDate = this.calculateDueDate()
       const newWatchItem = await createWatchItem(this.props.auth.getIdToken(), {
         ticker: this.state.newTicker
       })
-      this.setState({
-        watchItems: [...this.state.watchItems, newWatchItem],
-        newTicker: ''
-      })
+      // HACK XXX: ideally want to avoid another api call and just sort updated watchlistitems
+      this.componentDidMount()
     } catch {
       alert('WatchItem creation failed')
     }
   }
-
   
   onWatchItemDelete = async (watchId: string) => {
     try {
@@ -76,23 +73,6 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
       })
     } catch {
       alert('WatchItem deletion failed')
-    }
-  }
-
-  onWatchItemCheck = async (pos: number) => {
-    try {
-      const watchItem = this.state.watchItems[pos]
-      await patchWatchItem(this.props.auth.getIdToken(), watchItem.watchId, {
-        alertPrice: watchItem.price,
-      })
-      this.setState({
-        watchItems: update(this.state.watchItems, {
-          // HACK: XXX what to do on update here?
-          // [pos]: { done: { $set: !watchItem.done } }
-        })
-      })
-    } catch {
-      alert('WatchItem deletion failed')  // Deletion?
     }
   }
 
@@ -178,13 +158,6 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
         {this.state.watchItems.map((watchItem, pos) => {
           return (
             <Grid.Row key={watchItem.watchId}>
-              {/* <Grid.Column width={1} verticalAlign="middle">
-                <Checkbox
-                  onChange={() => this.onWatchItemCheck(pos)}
-                  // HACK XXX: Any use for this?
-                  // checked={watchItem.done}
-                />
-              </Grid.Column> */}
               <Grid.Column width={3} verticalAlign="middle">
                 {watchItem.ticker}
               </Grid.Column>
@@ -215,9 +188,6 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              {/* {watchItem.attachmentUrl && (
-                <Image src={watchItem.attachmentUrl} size="small" wrapped />
-              )} */}
               <Grid.Column width={16}>
                 <Divider />
               </Grid.Column>
