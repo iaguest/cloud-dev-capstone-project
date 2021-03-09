@@ -11,7 +11,6 @@ import { UpdateWatchItemRequest } from '../requests/UpdateWatchItemRequest'
 import { MockFinanceInfoProvider } from './infoProviders'
 
 const dbAccess = new DbAccess()
-const watchItemInfoProvider = new MockFinanceInfoProvider()
 
 export async function getWatchItems(
   userId: string
@@ -26,6 +25,7 @@ export async function createWatchItem(
   
   const ticker = createWatchItemRequest.ticker
 
+  const watchItemInfoProvider = new MockFinanceInfoProvider()
   const itemInfo = await watchItemInfoProvider.getInfo(ticker)
 
   return await dbAccess.createWatchItem({
@@ -34,7 +34,10 @@ export async function createWatchItem(
     ticker: ticker,
     alertPrice: null,
     previousPrice: null,
-    ...itemInfo
+    description: itemInfo.description,
+    price: itemInfo.price,
+    currency: itemInfo.currency,
+    timeStamp: itemInfo.timeStamp
   })
 }
 
@@ -44,7 +47,7 @@ export async function updateWatchItem(
   watchId: string
 ) {
   const watchItemUpdate: WatchItemUpdate = {
-    ...updateWatchItemRequest,
+    alertPrice: updateWatchItemRequest.alertPrice
   }
 
   const currentWatchItem: WatchItem = await dbAccess.getWatchItem(userId, watchId)
@@ -68,17 +71,21 @@ export async function refreshWatchItems(userId: string) {
 async function refreshItems(watchItems: WatchItem[]) {
   console.log(`In refreshItems: refreshing ${watchItems.length} items...`)
 
+  const watchItemInfoProvider = new MockFinanceInfoProvider()
+
   watchItems.forEach(async watchItem => {
     const userId = watchItem.userId
     const ticker = watchItem.ticker
+    const previousPrice = watchItem.price
 
     console.log(`refreshing item with userId: ${userId}, ticker: ${ticker}`)
 
     const itemInfo = await watchItemInfoProvider.getInfo(ticker)
 
     const watchItemRefresh: WatchItemRefresh = {
-      previousPrice: watchItem.price,
-      ...itemInfo
+      previousPrice: previousPrice,
+      price: itemInfo.price,
+      timeStamp: itemInfo.timeStamp
     }
 
     await dbAccess.refreshWatchItem(watchItemRefresh, userId, ticker)    
