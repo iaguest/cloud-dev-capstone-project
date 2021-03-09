@@ -10,6 +10,10 @@ import { UpdateWatchItemRequest } from '../requests/UpdateWatchItemRequest'
 
 import { MockFinanceInfoProvider } from './infoProviders'
 
+import { createLogger } from '../utils/logger'
+
+const logger = createLogger('watchItems')
+
 const dbAccess = new DbAccess()
 const watchItemInfoProvider = new MockFinanceInfoProvider()
 
@@ -66,8 +70,13 @@ export async function refreshWatchItems(userId: string) {
 }
 
 async function refreshItems(watchItems: WatchItem[]) {
+  logger.info(`In refreshItems: refreshing ${watchItems.length} items...`)
+
   watchItems.forEach(async watchItem => {
+    const userId = watchItem.userId
     const ticker = watchItem.ticker
+
+    logger.info(`refreshing item with userId: ${userId}, ticker: ${ticker}`)
 
     const itemInfo = await watchItemInfoProvider.getInfo(ticker)
 
@@ -76,8 +85,10 @@ async function refreshItems(watchItems: WatchItem[]) {
       ...itemInfo
     }
 
-    await dbAccess.refreshWatchItem(watchItemRefresh, watchItem.userId, ticker)    
+    await dbAccess.refreshWatchItem(watchItemRefresh, userId, ticker)    
   });  
+
+  logger.info("... exiting refreshItems")
 }
 
 // export async function setTodoItemAttachmentUrl(

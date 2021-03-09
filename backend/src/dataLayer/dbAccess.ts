@@ -22,7 +22,7 @@ export class DbAccess {
 
   // TODO: Re-assess use of scan here
   async getAllWatchItems(): Promise<WatchItem[]> {
-    logger.info("In getAllWatchItems...")
+    logger.info(`In getAllWatchItems...`)
 
     // Scan operation parameters
     const scanParams = {
@@ -34,11 +34,13 @@ export class DbAccess {
     const result = await this.docClient.scan(scanParams).promise()
 
     const items = result.Items
+    logger.info(`query result.Items are ${JSON.stringify(items)}`)
+
     return items as WatchItem[]
   }
 
   async getWatchItems(userId: string): Promise<WatchItem[]> {
-    logger.info("In getWatchItems...")
+    logger.info(`In getWatchItems for userId ${userId}...`)
     const result = await this.docClient.query({
       TableName: this.watchTable,
       KeyConditionExpression: 'userId = :userId',
@@ -49,11 +51,13 @@ export class DbAccess {
     }).promise()
 
     const items = result.Items
+    logger.info(`query result.Items are ${JSON.stringify(items)}`)
+
     return items as WatchItem[]
   }
 
   async getWatchItem(userId: string, watchId: string) : Promise<WatchItem> {
-    logger.info("In getWatchItem...")
+    logger.info(`In getWatchItem for userId ${userId}...`)
     const result = await this.docClient.query({
       TableName : this.watchTable,
       IndexName : this.watchTableIndex,
@@ -64,7 +68,10 @@ export class DbAccess {
       }
     }).promise()
 
-    const item = result.Items[0]
+    const items = result.Items
+    logger.info(`query result.Items are ${JSON.stringify(items)}`)
+
+    const item = items[0]
     return item as WatchItem
   }
 

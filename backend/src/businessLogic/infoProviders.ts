@@ -14,12 +14,14 @@ export class MockFinanceInfoProvider extends WatchItemInfoProvider {
 
   async getInfo(ticker: string): Promise<WatchItemInfo> {
     logger.info(`In getInfo, getting mock info for ${ticker}...`);
-    return {
+    const info: WatchItemInfo = {
       description: `${ticker} description`,
       price: Math.floor(Math.random() * 11),
       currency: 'USD',
       timeStamp: new Date().toISOString()
-    };
+    }
+    logger.info(`... returning WatchItemInfo: ${JSON.stringify(info)} from getInfo`)
+    return info
   }
 }
 
