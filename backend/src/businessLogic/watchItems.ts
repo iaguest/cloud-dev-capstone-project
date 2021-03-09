@@ -10,24 +10,24 @@ import { UpdateWatchItemRequest } from '../requests/UpdateWatchItemRequest'
 
 import { MockFinanceInfoProvider } from './infoProviders'
 
-const dbAccess = new DbAccess()
-
 export async function getWatchItems(
   userId: string
 ) : Promise<WatchItem[]> {
+  const dbAccess = new DbAccess()
   return dbAccess.getWatchItems(userId)
 }
 
 export async function createWatchItem(
   createWatchItemRequest: CreateWatchItemRequest,
   userId: string
-) : Promise<WatchItem> {
-  
+) : Promise<WatchItem> { 
+
   const ticker = createWatchItemRequest.ticker
 
   const watchItemInfoProvider = new MockFinanceInfoProvider()
   const itemInfo = await watchItemInfoProvider.getInfo(ticker)
 
+  const dbAccess = new DbAccess()
   return await dbAccess.createWatchItem({
     userId: userId,
     watchId: uuid.v4(),
@@ -50,25 +50,26 @@ export async function updateWatchItem(
     alertPrice: updateWatchItemRequest.alertPrice
   }
 
+  const dbAccess = new DbAccess()
   const currentWatchItem: WatchItem = await dbAccess.getWatchItem(userId, watchId)
-
   await dbAccess.updateWatchItem(watchItemUpdate, userId, currentWatchItem.ticker)
 }
 
 // Refresh watch items for all users
 export async function refreshAllWatchItems() {
+  const dbAccess = new DbAccess()
   const allWatchItems = await dbAccess.getAllWatchItems()
-  await refreshItems(allWatchItems)
+  await refreshItems(dbAccess, allWatchItems)
 }
 
 // Refresh watch items for a single user
 export async function refreshWatchItems(userId: string) {
-
-  const userWatchItems = await getWatchItems(userId)
-  await refreshItems(userWatchItems)
+  const dbAccess = new DbAccess()
+  const userWatchItems = await dbAccess.getWatchItems(userId)
+  await refreshItems(dbAccess, userWatchItems)
 }
 
-async function refreshItems(watchItems: WatchItem[]) {
+async function refreshItems(dbAccess: DbAccess, watchItems: WatchItem[]) {
   console.log(`In refreshItems: refreshing ${watchItems.length} items...`)
 
   const watchItemInfoProvider = new MockFinanceInfoProvider()
@@ -108,6 +109,8 @@ export async function deleteWatchItem(
   userId: string,
   watchId: string
 ) {
+  const dbAccess = new DbAccess()
+
   const currentWatchItem: WatchItem = await dbAccess.getWatchItem(userId, watchId)
 
   //if (currentTodoItem.attachmentUrl !== undefined) {
