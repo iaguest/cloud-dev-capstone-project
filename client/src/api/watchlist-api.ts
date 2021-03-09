@@ -21,7 +21,7 @@ export async function createWatchItem(
   idToken: string,
   createWatchItemRequest: CreateWatchItemRequest
 ): Promise<WatchItem> {
-  const response = await Axios.post(`${apiEndpoint}/watchlist`,  JSON.stringify(createWatchItemRequest), {
+  const response = await Axios.post(`${apiEndpoint}/watchlist`, JSON.stringify(createWatchItemRequest), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
@@ -53,7 +53,7 @@ export async function refreshWatchList(
 
   console.log(`Calling refresh watch list with id token ${idToken}...`)
 
-  const response = await Axios.post(`${apiEndpoint}/watchlist/refresh`, {
+  const response = await Axios.post(`${apiEndpoint}/watchlist/refresh`, '', {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
