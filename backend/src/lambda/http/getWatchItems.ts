@@ -12,7 +12,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const watchItems = await getWatchItems(getUserId(event))
 
   const items = watchItems.map(function(elem){
-    const { userId, previousPrice, ...item } = elem
+    const { userId, ...item } = elem
     return item
   })
 

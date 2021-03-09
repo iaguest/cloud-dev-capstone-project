@@ -32,7 +32,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   }
 
 
-  const { userId, previousPrice, ...item } = newItem
+  const { userId, ...item } = newItem
 
   return {
     statusCode: 201,

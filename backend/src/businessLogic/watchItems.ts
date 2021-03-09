@@ -72,6 +72,7 @@ async function refreshItems(watchItems: WatchItem[]) {
     const itemInfo = await watchItemInfoProvider.getInfo(ticker)
 
     const watchItemRefresh: WatchItemRefresh = {
+      previousPrice: watchItem.price,
       ...itemInfo
     }
 

@@ -102,11 +102,12 @@ export class DbAccess {
         'userId' : userId,
         'ticker' : ticker
       },
-      UpdateExpression: 'set #ts = :ts, price = :price',
+      UpdateExpression: 'set #ts = :ts, price = :price, previousPrice = :previousPrice',
       ExpressionAttributeNames: {
         "#ts": "timeStamp"
       },
       ExpressionAttributeValues: {
+        ':previousPrice': watchRefresh.previousPrice,
         ':price' : watchRefresh.price,
         ':ts' : watchRefresh.timeStamp,
       }
