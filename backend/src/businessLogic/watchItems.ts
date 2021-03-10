@@ -3,6 +3,7 @@ import * as uuid from 'uuid'
 import { WatchItem } from '../models/WatchItem'
 import { WatchItemRefresh } from '../models/WatchItemRefresh'
 import { WatchItemUpdate } from '../models/WatchItemUpdate'
+import { WatchItemInfoProvider } from '../models/WatchItemInfoProvider'
 import { DbAccess } from '../dataLayer/dbAccess'
 //import { deleteTodoItemAttachment } from '../dataLayer/fileAccess'
 import { CreateWatchItemRequest } from '../requests/CreateWatchItemRequest'
@@ -58,21 +59,21 @@ export async function updateWatchItem(
 // Refresh watch items for all users
 export async function refreshAllWatchItems() {
   const dbAccess = new DbAccess()
+  const infoProvider = new MockFinanceInfoProvider()
   const allWatchItems = await dbAccess.getAllWatchItems()
-  await refreshItems(dbAccess, allWatchItems)
+  await refreshItems(dbAccess, infoProvider, allWatchItems)
 }
 
 // Refresh watch items for a single user
 export async function refreshWatchItems(userId: string) {
   const dbAccess = new DbAccess()
+  const infoProvider = new MockFinanceInfoProvider()
   const userWatchItems = await dbAccess.getWatchItems(userId)
-  await refreshItems(dbAccess, userWatchItems)
+  await refreshItems(dbAccess, infoProvider, userWatchItems)
 }
 
-async function refreshItems(dbAccess: DbAccess, watchItems: WatchItem[]) {
+async function refreshItems(dbAccess: DbAccess, infoProvider: WatchItemInfoProvider, watchItems: WatchItem[]) {
   console.log(`In refreshItems: refreshing ${watchItems.length} items...`)
-
-  const watchItemInfoProvider = new MockFinanceInfoProvider()
 
   watchItems.forEach(async watchItem => {
     const userId = watchItem.userId
@@ -81,7 +82,7 @@ async function refreshItems(dbAccess: DbAccess, watchItems: WatchItem[]) {
 
     console.log(`refreshing item with userId: ${userId}, ticker: ${ticker}`)
 
-    const itemInfo = await watchItemInfoProvider.getInfo(ticker)
+    const itemInfo = await infoProvider.getInfo(ticker)
 
     const watchItemRefresh: WatchItemRefresh = {
       previousPrice: previousPrice,
