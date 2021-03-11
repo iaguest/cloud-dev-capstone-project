@@ -22,6 +22,7 @@ export class DbAccess {
 
     // Scan operation parameters
     const scanParams = {
+      ConsistentRead: true,
       TableName: this.watchTable,
       // Limit: limit,
       // ExclusiveStartKey: nextKey
@@ -38,6 +39,7 @@ export class DbAccess {
   async getWatchItems(userId: string): Promise<WatchItem[]> {
     console.log(`In getWatchItems for userId ${userId}...`)
     const result = await this.docClient.query({
+      ConsistentRead: true,
       TableName: this.watchTable,
       KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeValues: {
@@ -54,6 +56,7 @@ export class DbAccess {
   async getWatchItem(userId: string, watchId: string) : Promise<WatchItem> {
     console.log(`In getWatchItem for userId ${userId}...`)
     const result = await this.docClient.query({
+      ConsistentRead: true,
       TableName : this.watchTable,
       IndexName : this.watchTableIndex,
       KeyConditionExpression: 'userId = :userId and watchId = :watchId',
