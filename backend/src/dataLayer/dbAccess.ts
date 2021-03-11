@@ -2,7 +2,7 @@ import * as AWS  from 'aws-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 
 import { WatchItem } from '../models/WatchItem'
-import { WatchItemRefresh } from '../models/WatchItemRefresh'
+//import { WatchItemRefresh } from '../models/WatchItemRefresh'
 import { WatchItemUpdate } from '../models/WatchItemUpdate'
 
 // const AWSXRay = require('aws-xray-sdk')
@@ -95,26 +95,14 @@ export class DbAccess {
     }).promise()
   }
 
-  async refreshWatchItem(watchRefresh: WatchItemRefresh, userId: string, ticker: string) {
-    console.log(`In refreshWatchItem for userId ${userId}, ticker ${ticker}...`)
-    console.log(`WatchItemRefresh obj: ${JSON.stringify(watchRefresh)}`)
-    await this.docClient.update({
+  async refreshWatchItem(watchItemRefresh: WatchItem) {
+    console.log(`In refreshWatchItem...`)
+    console.log(`Refreshed watch item is ${JSON.stringify(watchItemRefresh)}`)
+    await this.docClient.put({
       TableName: this.watchTable,
-      Key: {
-        'userId' : userId,
-        'ticker' : ticker
-      },
-      UpdateExpression: 'set #ts = :ts, price = :price, previousPrice = :previousPrice',
-      ExpressionAttributeNames: {
-        "#ts": "timeStamp"
-      },
-      ExpressionAttributeValues: {
-        ':previousPrice': watchRefresh.previousPrice,
-        ':price' : watchRefresh.price,
-        ':ts' : watchRefresh.timeStamp,
-      }
+      Item: watchItemRefresh
     }).promise()
-    console.log("...completed refreshWatchItem")
+    console.log(`... exiting dbAccess refreshWatchItem`)
   }
 
   async deleteWatchItem(userId: string, ticker: string) {

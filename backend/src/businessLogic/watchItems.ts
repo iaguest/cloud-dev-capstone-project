@@ -1,7 +1,6 @@
 import * as uuid from 'uuid'
 
 import { WatchItem } from '../models/WatchItem'
-import { WatchItemRefresh } from '../models/WatchItemRefresh'
 import { WatchItemUpdate } from '../models/WatchItemUpdate'
 import { WatchItemInfoProvider } from '../models/WatchItemInfoProvider'
 import { DbAccess } from '../dataLayer/dbAccess'
@@ -25,8 +24,8 @@ export async function createWatchItem(
 
   const ticker = createWatchItemRequest.ticker
 
-  const watchItemInfoProvider = new MockFinanceInfoProvider()
-  const itemInfo = await watchItemInfoProvider.getInfo(ticker)
+  const watchItemInfoProvider = createWatchItemInfoProvider()
+  const itemInfo = watchItemInfoProvider.getInfo(ticker)
 
   const dbAccess = new DbAccess()
   return await dbAccess.createWatchItem({
@@ -59,7 +58,7 @@ export async function updateWatchItem(
 // Refresh watch items for all users
 export async function refreshAllWatchItems() {
   const dbAccess = new DbAccess()
-  const infoProvider = new MockFinanceInfoProvider()
+  const infoProvider = createWatchItemInfoProvider()
   const allWatchItems = await dbAccess.getAllWatchItems()
   await refreshItems(dbAccess, infoProvider, allWatchItems)
 }
@@ -67,7 +66,7 @@ export async function refreshAllWatchItems() {
 // Refresh watch items for a single user
 export async function refreshWatchItems(userId: string) {
   const dbAccess = new DbAccess()
-  const infoProvider = new MockFinanceInfoProvider()
+  const infoProvider = createWatchItemInfoProvider()
   const userWatchItems = await dbAccess.getWatchItems(userId)
   await refreshItems(dbAccess, infoProvider, userWatchItems)
 }
@@ -75,22 +74,18 @@ export async function refreshWatchItems(userId: string) {
 async function refreshItems(dbAccess: DbAccess, infoProvider: WatchItemInfoProvider, watchItems: WatchItem[]) {
   console.log(`In refreshItems: refreshing ${watchItems.length} items...`)
 
-  watchItems.forEach(async watchItem => {
-    const userId = watchItem.userId
+  watchItems.forEach(async (watchItem: WatchItem) => {
     const ticker = watchItem.ticker
-    const previousPrice = watchItem.price
 
-    console.log(`refreshing item with userId: ${userId}, ticker: ${ticker}`)
+    console.log(`refreshing item with userId: ${watchItem.userId}, ticker: ${ticker}`)
 
-    const itemInfo = await infoProvider.getInfo(ticker)
+    const itemInfo = infoProvider.getInfo(ticker)
 
-    const watchItemRefresh: WatchItemRefresh = {
-      previousPrice: previousPrice,
-      price: itemInfo.price,
-      timeStamp: itemInfo.timeStamp
-    }
+    watchItem.previousPrice = watchItem.price
+    watchItem.price = itemInfo.price
+    watchItem.timeStamp = itemInfo.timeStamp
 
-    await dbAccess.refreshWatchItem(watchItemRefresh, userId, ticker)    
+    await dbAccess.refreshWatchItem(watchItem)   
   });  
 
   console.log("... exiting refreshItems")
@@ -111,12 +106,10 @@ export async function deleteWatchItem(
   watchId: string
 ) {
   const dbAccess = new DbAccess()
-
   const currentWatchItem: WatchItem = await dbAccess.getWatchItem(userId, watchId)
-
-  //if (currentTodoItem.attachmentUrl !== undefined) {
-  //  await deleteTodoItemAttachment(watchId)
-  //}
-
   await dbAccess.deleteWatchItem(userId, currentWatchItem.ticker)
+}
+
+function createWatchItemInfoProvider(): WatchItemInfoProvider {
+  return new MockFinanceInfoProvider()
 }

@@ -1,5 +1,5 @@
 import { WatchItemInfo } from "./WatchItemInfo"
 
 export abstract class WatchItemInfoProvider {
-    abstract getInfo(ticker: string): Promise<WatchItemInfo>
+    abstract getInfo(ticker: string): WatchItemInfo
 }
