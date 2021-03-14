@@ -111,9 +111,18 @@ async function refreshItems(dbAccess: DbAccess, infoProvider: WatchItemInfoProvi
 export async function deleteWatchItem(
   userId: string,
   watchId: string
-) {
+) : Promise<boolean> {
   const dbAccess = new DbAccess()
+
+  const itemExists = await dbAccess.itemExists(userId, watchId)
+  if (!itemExists) {
+    console.log("Item does not exist!")
+    return false
+  }
+
   await dbAccess.deleteWatchItem(userId, watchId)
+
+  return true
 }
 
 function createWatchItemInfoProvider(): WatchItemInfoProvider {
