@@ -9,13 +9,16 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   console.log('Processing event: ', event)
 
   const userId: string = getUserId(event)
+  let isRefreshed = false
 
   try {
-    await refreshWatchItems(userId)
+    isRefreshed = await refreshWatchItems(userId)
   }
   catch (e) {
     return buildHttpResponse(500, { error: `Refresh failed: ${e.message}` })
   }
 
-  return buildHttpResponse(200, {})
+  return (isRefreshed)
+         ? buildHttpResponse(200, {})
+         : buildHttpResponse(400, { error: `Refresh failed: Items for userId ${userId} do not exist`})
 }

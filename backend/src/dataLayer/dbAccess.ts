@@ -14,8 +14,25 @@ export class DbAccess {
     private readonly watchTable = process.env.WATCH_TABLE) {
   }
 
-  async itemExists(userId: string, watchId: string): Promise<boolean> {
-    console.log(`In itemExists for userId ${userId}, watchId ${watchId}...`)
+  async watchItemsExist(userId: string) : Promise<boolean> {
+    console.log(`In watchItemsExist for userId ${userId}`)
+
+    const result = await this.docClient.query({
+      ConsistentRead: true,
+      TableName: this.watchTable,
+      KeyConditionExpression: 'userId = :userId',
+      ExpressionAttributeValues: {
+        ':userId': userId
+      },
+    }).promise()
+
+    console.log(`... exiting watchItemsExist, result.Items are ${JSON.stringify(result.Items)}`)
+
+    return result.Items.length > 0
+  }
+
+  async watchItemExists(userId: string, watchId: string): Promise<boolean> {
+    console.log(`In watchItemExists for userId ${userId}, watchId ${watchId}...`)
   
     const result = await this.docClient.get({
       ConsistentRead: true,
@@ -26,7 +43,7 @@ export class DbAccess {
       }
     }).promise()
   
-    console.log(`... exiting itemExists, result.Item is ${JSON.stringify(result.Item)}`)
+    console.log(`... exiting watchItemExists, result.Item is ${JSON.stringify(result.Item)}`)
   
     return result.Item !== undefined
   }

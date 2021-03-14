@@ -48,7 +48,7 @@ export async function updateWatchItem(
 ) : Promise<boolean> {
   const dbAccess = new DbAccess()
 
-  const itemExists = await dbAccess.itemExists(userId, watchId)
+  const itemExists = await dbAccess.watchItemExists(userId, watchId)
   if (!itemExists) {
     console.log("Item does not exist!")
     return false
@@ -71,11 +71,22 @@ export async function updateWatchItem(
 // }
 
 // Refresh watch items for a single user
-export async function refreshWatchItems(userId: string) {
+export async function refreshWatchItems(
+  userId: string
+) : Promise<boolean> {
   const dbAccess = new DbAccess()
+
+  const itemsExist = await dbAccess.watchItemsExist(userId)
+  if (!itemsExist) {
+    console.log(`No items exist for userId: ${userId}`)
+    return false
+  }
+  
   const infoProvider = createWatchItemInfoProvider()
   const userWatchItems = await dbAccess.getWatchItems(userId)
   await refreshItems(dbAccess, infoProvider, userWatchItems)
+
+  return true
 }
 
 async function refreshItems(dbAccess: DbAccess, infoProvider: WatchItemInfoProvider, watchItems: WatchItem[]) {
@@ -114,7 +125,7 @@ export async function deleteWatchItem(
 ) : Promise<boolean> {
   const dbAccess = new DbAccess()
 
-  const itemExists = await dbAccess.itemExists(userId, watchId)
+  const itemExists = await dbAccess.watchItemExists(userId, watchId)
   if (!itemExists) {
     console.log("Item does not exist!")
     return false
