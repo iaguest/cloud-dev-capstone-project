@@ -45,23 +45,30 @@ export async function updateWatchItem(
   updateWatchItemRequest: UpdateWatchItemRequest,
   userId: string,
   watchId: string
-) {
+) : Promise<boolean> {
+  const dbAccess = new DbAccess()
+
+  const itemExists = await dbAccess.itemExists(userId, watchId)
+  if (!itemExists) {
+    console.log("Item does not exist!")
+    return false
+  }
+
   const watchItemUpdate: WatchItemUpdate = {
     alertPrice: updateWatchItemRequest.alertPrice
   }
+  await dbAccess.updateWatchItem(watchItemUpdate, userId, watchId)
 
-  const dbAccess = new DbAccess()
-  const currentWatchItem: WatchItem = await dbAccess.getWatchItem(userId, watchId)
-  await dbAccess.updateWatchItem(watchItemUpdate, userId, currentWatchItem.ticker)
+  return true
 }
 
 // Refresh watch items for all users
-export async function refreshAllWatchItems() {
-  const dbAccess = new DbAccess()
-  const infoProvider = createWatchItemInfoProvider()
-  const allWatchItems = await dbAccess.getAllWatchItems()
-  await refreshItems(dbAccess, infoProvider, allWatchItems)
-}
+// export async function refreshAllWatchItems() {
+//   const dbAccess = new DbAccess()
+//   const infoProvider = createWatchItemInfoProvider()
+//   const allWatchItems = await dbAccess.getAllWatchItems()
+//   await refreshItems(dbAccess, infoProvider, allWatchItems)
+// }
 
 // Refresh watch items for a single user
 export async function refreshWatchItems(userId: string) {
@@ -106,8 +113,7 @@ export async function deleteWatchItem(
   watchId: string
 ) {
   const dbAccess = new DbAccess()
-  const currentWatchItem: WatchItem = await dbAccess.getWatchItem(userId, watchId)
-  await dbAccess.deleteWatchItem(userId, currentWatchItem.ticker)
+  await dbAccess.deleteWatchItem(userId, watchId)
 }
 
 function createWatchItemInfoProvider(): WatchItemInfoProvider {

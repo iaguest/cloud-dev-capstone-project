@@ -15,3 +15,17 @@ export function getUserId(event: APIGatewayProxyEvent): string {
 
   return parseUserId(jwtToken)
 }
+
+export function buildHttpResponse(code: number, body: object) {
+
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Credentials': true
+  }
+
+  return {
+    statusCode: code,
+    headers: headers,
+    body: JSON.stringify(body)
+  }
+}
