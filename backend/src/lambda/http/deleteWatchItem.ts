@@ -22,5 +22,5 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   return (isDeleted)
     ? buildHttpResponse(200, {})
-    : buildHttpResponse(400, { error: `Delete failed: Item with id ${watchId} does not exist})
+    : buildHttpResponse(400, { error: `Delete failed: Item with id ${watchId} does not exist`})
 }
