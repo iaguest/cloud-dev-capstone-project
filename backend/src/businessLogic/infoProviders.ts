@@ -9,7 +9,7 @@ export class MockFinanceInfoProvider extends WatchItemInfoProvider {
     console.log("... Finished construct MockFinanceInfoProvider")
   }
 
-  getInfo(ticker: string): WatchItemInfo {
+  async getInfo(ticker: string): Promise<WatchItemInfo> {
     console.log(`In getInfo, getting mock info for ${ticker}...`);
     const info: WatchItemInfo = {
       description: `${ticker} description`,
@@ -32,7 +32,7 @@ export class YahooFinanceInfoProvider extends WatchItemInfoProvider {
     console.log("... Finished construct YahooFinanceUpdateProvider");
   }
 
-  getInfo(ticker: string): WatchItemInfo {
+  async getInfo(ticker: string): Promise<WatchItemInfo> {
     console.log(`In getInfo, getting quote for ${ticker}...`);
     const quote = this.yahooFinance.quote(ticker, ['price']);
     console.log(`... quote retrieved ${JSON.stringify(quote)}`);

@@ -26,7 +26,7 @@ export async function createWatchItem(
   const ticker = createWatchItemRequest.ticker
 
   const watchItemInfoProvider = createWatchItemInfoProvider()
-  const itemInfo = watchItemInfoProvider.getInfo(ticker)
+  const itemInfo = await watchItemInfoProvider.getInfo(ticker)
 
   const dbAccess = new DbAccess()
   return await dbAccess.createWatchItem({
@@ -73,7 +73,7 @@ export async function refreshWatchItem(
   
   const currentItem = await dbAccess.getWatchItem(userId, watchId)
   const infoProvider = createWatchItemInfoProvider()
-  const itemInfo = infoProvider.getInfo(currentItem.ticker)
+  const itemInfo = await infoProvider.getInfo(currentItem.ticker)
 
   const watchItemRefresh: WatchItemRefresh = {
     previousPrice: currentItem.price,
