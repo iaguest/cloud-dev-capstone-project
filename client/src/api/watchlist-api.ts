@@ -6,7 +6,7 @@ import { UpdateWatchItemRequest } from '../types/UpdateWatchItemRequest';
 import { watch } from 'fs';
 
 export async function getWatchItems(idToken: string): Promise<WatchItem[]> {
-  console.log('Fetching watch items')
+  console.log('Fetching watch items...')
 
   const response = await Axios.get(`${apiEndpoint}/watchlist`, {
     headers: {
@@ -22,13 +22,18 @@ export async function createWatchItem(
   idToken: string,
   createWatchItemRequest: CreateWatchItemRequest
 ): Promise<WatchItem> {
+  console.log("In createWatchItem...")
+
   const response = await Axios.post(`${apiEndpoint}/watchlist`, JSON.stringify(createWatchItemRequest), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
     }
   })
-  return response.data.item
+
+  const item = response.data.item
+  console.log(`... item is ${JSON.stringify(item)}, exiting createWatchItem`)
+  return item
 }
 
 export async function patchWatchItem(
@@ -61,6 +66,9 @@ export async function refreshWatchItem(
       'Authorization': `Bearer ${idToken}`
     }
   })
+
+  console.log(`refreshWatchItem response: ${JSON.stringify(response)}`)
+  console.log("... Exiting refreshWatchItem")
 }
 
 export async function deleteWatchItem(
