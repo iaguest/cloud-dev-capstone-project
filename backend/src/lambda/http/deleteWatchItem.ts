@@ -11,16 +11,12 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const watchId = event.pathParameters.watchId
   const userId: string = getUserId(event)
 
-  let isDeleted = false
-
   try {
-    isDeleted = await deleteWatchItem(userId, watchId)
+    await deleteWatchItem(userId, watchId)
   }
   catch (e) {
     return buildHttpResponse(500, { error: `Delete failed: ${e.message}` })
   }
 
-  return (isDeleted)
-    ? buildHttpResponse(200, {})
-    : buildHttpResponse(400, { error: `Delete failed: Item with id ${watchId} does not exist`})
+  return buildHttpResponse(200, {})
 }

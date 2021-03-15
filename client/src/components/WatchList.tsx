@@ -48,8 +48,12 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
     try {
       const idToken = this.props.auth.getIdToken()
       this.state.watchItems.forEach(async (item:WatchItem) => {
-        await refreshWatchItem(idToken, item.watchId)
+        const refreshedItem = await refreshWatchItem(idToken, item.watchId)
+        item = refreshedItem
       })
+      // this.setState({
+      //   watchItems: [...this.state.watchItems]
+      // })
       this.componentDidMount()
     } catch (e) {
       alert(`Watch list refresh failed: ${e.message}`)
@@ -61,8 +65,9 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
       const newWatchItem = await createWatchItem(this.props.auth.getIdToken(), {
         ticker: this.state.newTicker
       })
-      // HACK XXX: ideally want to avoid another api call and just sort updated watchlistitems
-      this.componentDidMount()
+      this.setState({
+        watchItems: [...this.state.watchItems, newWatchItem]
+      })
     } catch {
       alert('WatchItem creation failed')
     }

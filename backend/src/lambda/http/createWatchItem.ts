@@ -20,7 +20,6 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     return buildHttpResponse(500, { error: `Create failed: ${e.message}` })  
   }
 
-
   const { userId, ...item } = newItem
 
   return buildHttpResponse(201, { item })

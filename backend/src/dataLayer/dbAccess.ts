@@ -98,10 +98,10 @@ export class DbAccess {
     return watchItem
   }
 
-  async updateWatchItem(watchItemUpdate: WatchItemUpdate, userId: string, watchId: string) {
+  async updateWatchItem(watchItemUpdate: WatchItemUpdate, userId: string, watchId: string) : Promise<WatchItem> {
     console.log("In updateWatchItem...")
 
-    await this.docClient.update({
+    const result = await this.docClient.update({
       TableName: this.watchTable,
       Key: {
         'userId' : userId,
@@ -110,13 +110,17 @@ export class DbAccess {
       UpdateExpression: 'set alertPrice = :alertPrice',
       ExpressionAttributeValues: {
         ':alertPrice' : watchItemUpdate.alertPrice,
-      }
+      },
+      ReturnValues:"ALL_NEW"
     }).promise()
+
+    console.log("... completed updateWatchItem")
+    return result.Attributes as WatchItem
   }
 
-  async refreshWatchItem(watchItemRefresh: WatchItemRefresh, userId: string, watchId: string) {
+  async refreshWatchItem(watchItemRefresh: WatchItemRefresh, userId: string, watchId: string): Promise<WatchItem> {
     console.log(`In refreshWatchItem for userId ${userId}, watchId ${watchId}...`)
-    await this.docClient.update({
+    const result = await this.docClient.update({
       TableName: this.watchTable,
       Key: {
         'userId' : userId,
@@ -130,9 +134,11 @@ export class DbAccess {
         ':previousPrice': watchItemRefresh.previousPrice,
         ':price' : watchItemRefresh.price,
         ':ts' : watchItemRefresh.timeStamp,
-      }
+      },
+      ReturnValues:"ALL_NEW"
     }).promise()
     console.log("...completed refreshWatchItem")
+    return result.Attributes as WatchItem
   }
 
   async deleteWatchItem(userId: string, watchId: string) {

@@ -4,23 +4,23 @@ import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } f
 
 import { getUserId, buildHttpResponse } from '../utils'
 import { refreshWatchItem } from '../../businessLogic/watchItems'
+import { WatchItem } from '../../models/WatchItem'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('Processing event: ', event)
 
   const watchId = event.pathParameters.watchId
-  const userId: string = getUserId(event)
 
-  let isRefreshed = false
+  let refreshedItem: WatchItem = undefined
 
   try {
-    isRefreshed = await refreshWatchItem(userId, watchId)
+    refreshedItem = await refreshWatchItem(getUserId(event), watchId)
   }
   catch (e) {
     return buildHttpResponse(500, { error: `Refresh failed: ${e.message}` })
   }
 
-  return (isRefreshed)
-         ? buildHttpResponse(200, {})
-         : buildHttpResponse(400, { error: `Refresh failed: Item with id ${watchId} does not exist`})
+  const { userId, ...item } = refreshedItem
+
+  return buildHttpResponse(200, { item })
 }

@@ -32,7 +32,7 @@ export async function createWatchItem(
   })
 
   const item = response.data.item
-  console.log(`... item is ${JSON.stringify(item)}, exiting createWatchItem`)
+  console.log(`... response item is ${JSON.stringify(item)}, exiting createWatchItem`)
   return item
 }
 
@@ -56,7 +56,7 @@ export async function patchWatchItem(
 export async function refreshWatchItem(
   idToken: string,
   watchId: string
-): Promise<void> {
+): Promise<WatchItem> {
 
   console.log(`Calling refresh watch item with id token ${idToken} and watchId ${watchId}...`)
 
@@ -67,8 +67,10 @@ export async function refreshWatchItem(
     }
   })
 
-  console.log(`refreshWatchItem response: ${JSON.stringify(response)}`)
+  const item = response.data.item
+  console.log(`response item is: ${JSON.stringify(item)}`)
   console.log("... Exiting refreshWatchItem")
+  return item
 }
 
 export async function deleteWatchItem(

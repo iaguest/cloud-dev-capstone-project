@@ -46,31 +46,29 @@ export async function updateWatchItem(
   updateWatchItemRequest: UpdateWatchItemRequest,
   userId: string,
   watchId: string
-) : Promise<boolean> {
+) : Promise<WatchItem> {
   const dbAccess = new DbAccess()
 
   const itemExists = await dbAccess.watchItemExists(userId, watchId)
   if (!itemExists) {
-    return false
+    throw new RangeError("Item does not exist")
   }
 
   const watchItemUpdate: WatchItemUpdate = {
     alertPrice: updateWatchItemRequest.alertPrice
   }
-  await dbAccess.updateWatchItem(watchItemUpdate, userId, watchId)
-
-  return true
+  return await dbAccess.updateWatchItem(watchItemUpdate, userId, watchId)
 }
 
 export async function refreshWatchItem(
   userId: string,
   watchId: string
-) : Promise<boolean> {
+) : Promise<WatchItem> {
   const dbAccess = new DbAccess()
 
   const itemExists = await dbAccess.watchItemExists(userId, watchId)
   if (!itemExists) {
-    return false
+    throw new RangeError("Item does not exist")
   }
   
   const currentItem = await dbAccess.getWatchItem(userId, watchId)
@@ -83,25 +81,21 @@ export async function refreshWatchItem(
     timeStamp: itemInfo.timeStamp
   }
 
-  await dbAccess.refreshWatchItem(watchItemRefresh, userId, watchId)
-
-  return true
+  return await dbAccess.refreshWatchItem(watchItemRefresh, userId, watchId)
 }
 
 export async function deleteWatchItem(
   userId: string,
   watchId: string
-) : Promise<boolean> {
+) {
   const dbAccess = new DbAccess()
 
   const itemExists = await dbAccess.watchItemExists(userId, watchId)
   if (!itemExists) {
-    return false
+    throw new RangeError("Item does not exist")
   }
 
   await dbAccess.deleteWatchItem(userId, watchId)
-
-  return true
 }
 
 function createWatchItemInfoProvider(): WatchItemInfoProvider {

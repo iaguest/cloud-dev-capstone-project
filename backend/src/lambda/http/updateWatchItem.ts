@@ -5,6 +5,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } f
 import { getUserId, buildHttpResponse } from '../utils'
 import { UpdateWatchItemRequest } from '../../requests/UpdateWatchItemRequest'
 import { updateWatchItem } from '../../businessLogic/watchItems'
+import { WatchItem } from '../../models/WatchItem'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('Processing event: ', event)
@@ -12,18 +13,16 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const watchId = event.pathParameters.watchId
   const updatedWatchItem: UpdateWatchItemRequest = JSON.parse(event.body)
 
-  const userId: string = getUserId(event)
-
-  let isUpdated = false
+  let updatedItem: WatchItem = undefined
 
   try {
-    isUpdated = await updateWatchItem(updatedWatchItem, userId, watchId)
+    updatedItem = await updateWatchItem(updatedWatchItem, getUserId(event), watchId)
   }
   catch (e) {
     return buildHttpResponse(500, {error: `Update failed: ${e.message}`})
   }
 
-  return (isUpdated)
-    ? buildHttpResponse(200, {})
-    : buildHttpResponse(400, {error: `Update failed: Item with id ${watchId} does not exist`})
+  const { userId, ...item } = updatedItem
+
+  return buildHttpResponse(200, { item })
 }
