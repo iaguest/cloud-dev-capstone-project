@@ -51,7 +51,6 @@ export async function updateWatchItem(
 
   const itemExists = await dbAccess.watchItemExists(userId, watchId)
   if (!itemExists) {
-    console.log("Item does not exist!")
     return false
   }
 
@@ -63,15 +62,6 @@ export async function updateWatchItem(
   return true
 }
 
-// Refresh watch items for all users
-// export async function refreshAllWatchItems() {
-//   const dbAccess = new DbAccess()
-//   const infoProvider = createWatchItemInfoProvider()
-//   const allWatchItems = await dbAccess.getAllWatchItems()
-//   await refreshItems(dbAccess, infoProvider, allWatchItems)
-// }
-
-// Refresh watch items for a single user
 export async function refreshWatchItem(
   userId: string,
   watchId: string
@@ -80,7 +70,6 @@ export async function refreshWatchItem(
 
   const itemExists = await dbAccess.watchItemExists(userId, watchId)
   if (!itemExists) {
-    console.log("Item does not exist!")
     return false
   }
   
@@ -99,36 +88,6 @@ export async function refreshWatchItem(
   return true
 }
 
-// async function refreshItems(dbAccess: DbAccess, infoProvider: WatchItemInfoProvider, watchItems: WatchItem[]) {
-//   console.log(`In refreshItems: refreshing ${watchItems.length} items...`)
-
-//   watchItems.forEach(async (watchItem: WatchItem) => {
-//     const ticker = watchItem.ticker
-
-//     console.log(`refreshing item with userId: ${watchItem.userId}, ticker: ${ticker}`)
-
-//     const itemInfo = infoProvider.getInfo(ticker)
-
-//     watchItem.previousPrice = watchItem.price
-//     watchItem.price = itemInfo.price
-//     watchItem.timeStamp = itemInfo.timeStamp
-
-//     await dbAccess.refreshWatchItem(watchItem)   
-//   });  
-
-//   console.log("... exiting refreshItems")
-// }
-
-// export async function setTodoItemAttachmentUrl(
-//   userId: string,
-//   todoId: string,
-//   url: string
-// ) {
-//   const currentTodoItem: WatchItem = await dbAccess.getWatchItem(userId, todoId)
-  
-//   await dbAccess.setTodoItemAttachmentUrl(userId, currentTodoItem.createdAt, url)
-// }
-
 export async function deleteWatchItem(
   userId: string,
   watchId: string
@@ -137,7 +96,6 @@ export async function deleteWatchItem(
 
   const itemExists = await dbAccess.watchItemExists(userId, watchId)
   if (!itemExists) {
-    console.log("Item does not exist!")
     return false
   }
 

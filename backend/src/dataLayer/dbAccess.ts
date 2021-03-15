@@ -26,9 +26,12 @@ export class DbAccess {
       }
     }).promise()
   
-    console.log(`... exiting watchItemExists, result.Item is ${JSON.stringify(result.Item)}`)
+    console.log(`result.Item is ${JSON.stringify(result.Item)}`)
+
+    const itemExists = result.Item !== undefined
+    console.log(`... exiting watchItemExists, ${(itemExists) ? 'found item' : 'item not found'}`)
   
-    return result.Item !== undefined
+    return itemExists
   }
 
   // TODO: Re-assess use of scan here
