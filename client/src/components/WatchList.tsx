@@ -47,14 +47,16 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
   onWatchListRefresh = async () => {
     try {
       const idToken = this.props.auth.getIdToken()
-      this.state.watchItems.forEach(async (item:WatchItem) => {
-        const refreshedItem = await refreshWatchItem(idToken, item.watchId)
-        item = refreshedItem
+      
+      let refreshedItems: WatchItem[] = []
+      for (const item of this.state.watchItems) {
+        refreshedItems.push(await refreshWatchItem(idToken, item.watchId))        
+      }
+
+      this.setState({
+        watchItems: refreshedItems
       })
-      // this.setState({
-      //   watchItems: [...this.state.watchItems]
-      // })
-      this.componentDidMount()
+
     } catch (e) {
       alert(`Watch list refresh failed: ${e.message}`)
     }
