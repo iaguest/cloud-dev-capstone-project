@@ -2,6 +2,7 @@ import * as uuid from 'uuid'
 
 import { WatchItem } from '../models/WatchItem'
 import { WatchItemUpdate } from '../models/WatchItemUpdate'
+import { WatchItemRefresh } from '../models/WatchItemRefresh'
 import { WatchItemInfoProvider } from '../models/WatchItemInfoProvider'
 import { DbAccess } from '../dataLayer/dbAccess'
 //import { deleteTodoItemAttachment } from '../dataLayer/fileAccess'
@@ -71,43 +72,52 @@ export async function updateWatchItem(
 // }
 
 // Refresh watch items for a single user
-export async function refreshWatchItems(
-  userId: string
+export async function refreshWatchItem(
+  userId: string,
+  watchId: string
 ) : Promise<boolean> {
   const dbAccess = new DbAccess()
 
-  const itemsExist = await dbAccess.watchItemsExist(userId)
-  if (!itemsExist) {
-    console.log(`No items exist for userId: ${userId}`)
+  const itemExists = await dbAccess.watchItemExists(userId, watchId)
+  if (!itemExists) {
+    console.log("Item does not exist!")
     return false
   }
   
+  const currentItem = await dbAccess.getWatchItem(userId, watchId)
   const infoProvider = createWatchItemInfoProvider()
-  const userWatchItems = await dbAccess.getWatchItems(userId)
-  await refreshItems(dbAccess, infoProvider, userWatchItems)
+  const itemInfo = infoProvider.getInfo(currentItem.ticker)
+
+  const watchItemRefresh: WatchItemRefresh = {
+    previousPrice: currentItem.price,
+    price: itemInfo.price,
+    timeStamp: itemInfo.timeStamp
+  }
+
+  await dbAccess.refreshWatchItem(watchItemRefresh, userId, watchId)
 
   return true
 }
 
-async function refreshItems(dbAccess: DbAccess, infoProvider: WatchItemInfoProvider, watchItems: WatchItem[]) {
-  console.log(`In refreshItems: refreshing ${watchItems.length} items...`)
+// async function refreshItems(dbAccess: DbAccess, infoProvider: WatchItemInfoProvider, watchItems: WatchItem[]) {
+//   console.log(`In refreshItems: refreshing ${watchItems.length} items...`)
 
-  watchItems.forEach(async (watchItem: WatchItem) => {
-    const ticker = watchItem.ticker
+//   watchItems.forEach(async (watchItem: WatchItem) => {
+//     const ticker = watchItem.ticker
 
-    console.log(`refreshing item with userId: ${watchItem.userId}, ticker: ${ticker}`)
+//     console.log(`refreshing item with userId: ${watchItem.userId}, ticker: ${ticker}`)
 
-    const itemInfo = infoProvider.getInfo(ticker)
+//     const itemInfo = infoProvider.getInfo(ticker)
 
-    watchItem.previousPrice = watchItem.price
-    watchItem.price = itemInfo.price
-    watchItem.timeStamp = itemInfo.timeStamp
+//     watchItem.previousPrice = watchItem.price
+//     watchItem.price = itemInfo.price
+//     watchItem.timeStamp = itemInfo.timeStamp
 
-    await dbAccess.refreshWatchItem(watchItem)   
-  });  
+//     await dbAccess.refreshWatchItem(watchItem)   
+//   });  
 
-  console.log("... exiting refreshItems")
-}
+//   console.log("... exiting refreshItems")
+// }
 
 // export async function setTodoItemAttachmentUrl(
 //   userId: string,

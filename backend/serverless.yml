@@ -73,23 +73,23 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:GetItem
           - dynamodb:UpdateItem
+          - dynamodb:GetItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WATCH_TABLE}
 
-  RefreshWatchItems:
-    handler: src/lambda/http/refreshWatchItems.handler
+  RefreshWatchItem:
+    handler: src/lambda/http/refreshWatchItem.handler
     events:
       - http:
           method: post
-          path: watchlist/refresh
+          path: watchlist/{watchId}/refresh
           cors: true
           authorizer: Auth
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:PutItem
-          - dynamodb:Query
+          - dynamodb:UpdateItem
+          - dynamodb:GetItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WATCH_TABLE}
 
   DeleteWatchItem:
@@ -103,8 +103,8 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:GetItem
           - dynamodb:DeleteItem
+          - dynamodb:GetItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WATCH_TABLE}
       - Effect: Allow
         Action:

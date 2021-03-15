@@ -1,7 +1,7 @@
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 
 import { WatchItem } from '../models/WatchItem'
-//import { WatchItemRefresh } from '../models/WatchItemRefresh'
+import { WatchItemRefresh } from '../models/WatchItemRefresh'
 import { WatchItemUpdate } from '../models/WatchItemUpdate'
 
 // const AWSXRay = require('aws-xray-sdk')
@@ -12,23 +12,6 @@ export class DbAccess {
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
     private readonly watchTable = process.env.WATCH_TABLE) {
-  }
-
-  async watchItemsExist(userId: string) : Promise<boolean> {
-    console.log(`In watchItemsExist for userId ${userId}`)
-
-    const result = await this.docClient.query({
-      ConsistentRead: true,
-      TableName: this.watchTable,
-      KeyConditionExpression: 'userId = :userId',
-      ExpressionAttributeValues: {
-        ':userId': userId
-      },
-    }).promise()
-
-    console.log(`... exiting watchItemsExist, result.Items are ${JSON.stringify(result.Items)}`)
-
-    return result.Items.length > 0
   }
 
   async watchItemExists(userId: string, watchId: string): Promise<boolean> {
@@ -68,6 +51,21 @@ export class DbAccess {
   //   return items as WatchItem[]
   // }
 
+  async getWatchItem(userId: string, watchId: string)
+  : Promise<WatchItem> {
+
+    const result = await this.docClient.get({
+      ConsistentRead: true,
+      TableName: this.watchTable,
+      Key: {
+        'userId' : userId,
+        'watchId' : watchId
+      }
+    }).promise()
+
+    return result.Item as WatchItem
+  }
+
   async getWatchItems(userId: string): Promise<WatchItem[]> {
     console.log(`In getWatchItems for userId ${userId}...`)
 
@@ -97,7 +95,7 @@ export class DbAccess {
     return watchItem
   }
 
-  async updateWatchItem(watchUpdate: WatchItemUpdate, userId: string, watchId: string) {
+  async updateWatchItem(watchItemUpdate: WatchItemUpdate, userId: string, watchId: string) {
     console.log("In updateWatchItem...")
 
     await this.docClient.update({
@@ -108,20 +106,30 @@ export class DbAccess {
       },
       UpdateExpression: 'set alertPrice = :alertPrice',
       ExpressionAttributeValues: {
-        ':alertPrice' : watchUpdate.alertPrice,
+        ':alertPrice' : watchItemUpdate.alertPrice,
       }
     }).promise()
   }
 
-  async refreshWatchItem(watchItemRefresh: WatchItem) {
-    console.log(`In refreshWatchItem...`)
-    console.log(`Refreshed watch item is ${JSON.stringify(watchItemRefresh)}`)
-
-    await this.docClient.put({
+  async refreshWatchItem(watchItemRefresh: WatchItemRefresh, userId: string, watchId: string) {
+    console.log(`In refreshWatchItem for userId ${userId}, watchId ${watchId}...`)
+    await this.docClient.update({
       TableName: this.watchTable,
-      Item: watchItemRefresh
+      Key: {
+        'userId' : userId,
+        'watchId' : watchId
+      },
+      UpdateExpression: 'set #ts = :ts, price = :price, previousPrice = :previousPrice',
+      ExpressionAttributeNames: {
+        "#ts": "timeStamp"
+      },
+      ExpressionAttributeValues: {
+        ':previousPrice': watchItemRefresh.previousPrice,
+        ':price' : watchItemRefresh.price,
+        ':ts' : watchItemRefresh.timeStamp,
+      }
     }).promise()
-    console.log(`... exiting dbAccess refreshWatchItem`)
+    console.log("...completed refreshWatchItem")
   }
 
   async deleteWatchItem(userId: string, watchId: string) {
