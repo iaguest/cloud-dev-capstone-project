@@ -3,6 +3,7 @@ import { WatchItem } from '../types/WatchItem';
 import { CreateWatchItemRequest } from '../types/CreateWatchItemRequest';
 import Axios from 'axios'
 import { UpdateWatchItemRequest } from '../types/UpdateWatchItemRequest';
+import { watch } from 'fs';
 
 export async function getWatchItems(idToken: string): Promise<WatchItem[]> {
   console.log('Fetching watch items')
@@ -47,13 +48,14 @@ export async function patchWatchItem(
   })
 }
 
-export async function refreshWatchList(
-  idToken: string
+export async function refreshWatchItem(
+  idToken: string,
+  watchId: string
 ): Promise<void> {
 
-  console.log(`Calling refresh watch list with id token ${idToken}...`)
+  console.log(`Calling refresh watch item with id token ${idToken} and watchId ${watchId}...`)
 
-  const response = await Axios.post(`${apiEndpoint}/watchlist/refresh`, '', {
+  const response = await Axios.post(`${apiEndpoint}/watchlist/${watchId}/refresh`, '', {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`

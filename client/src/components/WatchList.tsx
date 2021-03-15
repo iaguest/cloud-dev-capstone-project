@@ -14,7 +14,7 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createWatchItem, deleteWatchItem, getWatchItems, patchWatchItem, refreshWatchList } from '../api/watchlist-api'
+import { createWatchItem, deleteWatchItem, getWatchItems, patchWatchItem, refreshWatchItem } from '../api/watchlist-api'
 import Auth from '../auth/Auth'
 import { WatchItem } from '../types/WatchItem'
 
@@ -46,10 +46,13 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
 
   onWatchListRefresh = async () => {
     try {
-      const newWatchItem = await refreshWatchList(this.props.auth.getIdToken())
+      const idToken = this.props.auth.getIdToken()
+      this.state.watchItems.forEach(async (item:WatchItem) => {
+        await refreshWatchItem(idToken, item.watchId)
+      })
       this.componentDidMount()
     } catch (e) {
-      alert(`WatchList refresh failed: ${e.message}`)
+      alert(`Watch list refresh failed: ${e.message}`)
     }
   }
 
@@ -78,9 +81,9 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
 
   async componentDidMount() {
     try {
-      const todos = await getWatchItems(this.props.auth.getIdToken())
+      const watchItems = await getWatchItems(this.props.auth.getIdToken())
       this.setState({
-        watchItems: todos,
+        watchItems: watchItems,
         loadingWatchItems: false
       })
     } catch (e) {
