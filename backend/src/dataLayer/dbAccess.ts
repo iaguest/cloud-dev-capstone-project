@@ -29,30 +29,10 @@ export class DbAccess {
     console.log(`result.Item is ${JSON.stringify(result.Item)}`)
 
     const itemExists = result.Item !== undefined
-    console.log(`... exiting watchItemExists, ${(itemExists) ? 'found item' : 'item not found'}`)
+    console.log(`... ${(itemExists) ? 'found item' : 'item not found'}, exiting watchItemExists`)
   
     return itemExists
   }
-
-  // TODO: Re-assess use of scan here
-  // async getAllWatchItems(): Promise<WatchItem[]> {
-  //   console.log(`In getAllWatchItems...`)
-
-  //   // Scan operation parameters
-  //   const scanParams = {
-  //     ConsistentRead: true,
-  //     TableName: this.watchTable,
-  //     // Limit: limit,
-  //     // ExclusiveStartKey: nextKey
-  //   }
-
-  //   const result = await this.docClient.scan(scanParams).promise()
-
-  //   const items = result.Items
-  //   console.log(`query result.Items are ${JSON.stringify(items)}`)
-
-  //   return items as WatchItem[]
-  // }
 
   async getWatchItem(userId: string, watchId: string)
   : Promise<WatchItem> {
@@ -86,6 +66,26 @@ export class DbAccess {
 
     return items as WatchItem[]
   }
+
+  // TODO: Re-assess use of scan here
+  // async getAllWatchItems(): Promise<WatchItem[]> {
+  //   console.log(`In getAllWatchItems...`)
+
+  //   // Scan operation parameters
+  //   const scanParams = {
+  //     ConsistentRead: true,
+  //     TableName: this.watchTable,
+  //     // Limit: limit,
+  //     // ExclusiveStartKey: nextKey
+  //   }
+
+  //   const result = await this.docClient.scan(scanParams).promise()
+
+  //   const items = result.Items
+  //   console.log(`query result.Items are ${JSON.stringify(items)}`)
+
+  //   return items as WatchItem[]
+  // }
 
   async createWatchItem(watchItem: WatchItem): Promise<WatchItem> {
     console.log("In createWatchItem...")
