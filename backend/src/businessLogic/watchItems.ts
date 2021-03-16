@@ -34,6 +34,7 @@ export async function createWatchItem(
     watchId: uuid.v4(),
     ticker: ticker,
     alertPrice: null,
+    alertTriggered: false,
     previousPrice: null,
     description: itemInfo.description,
     price: itemInfo.price,
@@ -78,7 +79,12 @@ export async function refreshWatchItem(
   const watchItemRefresh: WatchItemRefresh = {
     previousPrice: currentItem.price,
     price: itemInfo.price,
-    timeStamp: itemInfo.timeStamp
+    timeStamp: itemInfo.timeStamp,
+    alertTriggered: (currentItem.alertTriggered) ?
+                     currentItem.alertTriggered :
+                     isTriggerAlert(currentItem.price,
+                                    itemInfo.price,
+                                    currentItem.alertPrice)
   }
 
   return await dbAccess.refreshWatchItem(watchItemRefresh, userId, watchId)
@@ -113,6 +119,22 @@ export async function deleteWatchItem(
   }
 
   await dbAccess.deleteWatchItem(userId, watchId)
+}
+
+function isTriggerAlert(previousPrice: number,
+                        currentPrice: number,
+                        alertPrice: number
+) : boolean {
+  
+  if (alertPrice === undefined) {
+    return false
+  }
+
+  if ((previousPrice < alertPrice) && (alertPrice < currentPrice)) {
+    return true
+  }
+
+  return ((previousPrice > alertPrice) && (alertPrice > currentPrice))
 }
 
 function createWatchItemInfoProvider(): WatchItemInfoProvider {

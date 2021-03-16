@@ -122,7 +122,7 @@ export class DbAccess {
         'userId' : userId,
         'watchId' : watchId
       },
-      UpdateExpression: 'set #ts = :ts, price = :price, previousPrice = :previousPrice',
+      UpdateExpression: 'set #ts = :ts, price = :price, previousPrice = :previousPrice, alertTriggered = :alertTriggered',
       ExpressionAttributeNames: {
         "#ts": "timeStamp"
       },
@@ -130,6 +130,7 @@ export class DbAccess {
         ':previousPrice': watchItemRefresh.previousPrice,
         ':price' : watchItemRefresh.price,
         ':ts' : watchItemRefresh.timeStamp,
+        ':alertTriggered': watchItemRefresh.alertTriggered
       },
       ReturnValues:"ALL_NEW"
     }).promise()

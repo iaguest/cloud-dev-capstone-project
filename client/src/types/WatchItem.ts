@@ -6,4 +6,5 @@ export interface WatchItem {
   currency: string
   timeStamp: string
   alertPrice?: number
+  alertTriggered: boolean
 }

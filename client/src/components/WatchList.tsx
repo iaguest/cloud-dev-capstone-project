@@ -174,7 +174,7 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
               <Grid.Column width={4} verticalAlign="middle">
                 {watchItem.description}
               </Grid.Column>
-              <Grid.Column width={3} verticalAlign="middle">
+              <Grid.Column width={3} verticalAlign="middle" style={{ color: watchItem.alertTriggered ? "red" : "black" }}>
                 {watchItem.price.toFixed(2)}{watchItem.currency} {(watchItem.alertPrice ? `[${watchItem.alertPrice.toFixed(2)}]` : '')}
               </Grid.Column>
               <Grid.Column width={3} verticalAlign="middle">
