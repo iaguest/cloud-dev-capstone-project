@@ -65,23 +65,23 @@ export class DbAccess {
   }
 
   // TODO: Re-assess use of scan here
-  // async getAllWatchItems(): Promise<WatchItem[]> {
-  //   console.log(`In getAllWatchItems...`)
+  async getAllWatchItems(): Promise<WatchItem[]> {
+    console.log(`In getAllWatchItems...`)
 
-  //   // Scan operation parameters
-  //   const scanParams = {
-  //     TableName: this.watchTable,
-  //     // Limit: limit,
-  //     // ExclusiveStartKey: nextKey
-  //   }
+    // Scan operation parameters
+    const scanParams = {
+      TableName: this.watchTable,
+      // Limit: limit,
+      // ExclusiveStartKey: nextKey
+    }
 
-  //   const result = await this.docClient.scan(scanParams).promise()
+    const result = await this.docClient.scan(scanParams).promise()
 
-  //   const items = result.Items
-  //   console.log(`query result.Items are ${JSON.stringify(items)}`)
+    const items = result.Items
+    console.log(`query result.Items are ${JSON.stringify(items)}`)
 
-  //   return items as WatchItem[]
-  // }
+    return items as WatchItem[]
+  }
 
   async createWatchItem(watchItem: WatchItem): Promise<WatchItem> {
     console.log("In createWatchItem...")
@@ -167,10 +167,5 @@ export class DbAccess {
 }
 
 function createDynamoDBClient() {
-  return new DocumentClient({
-    maxRetries: 3,
-    httpOptions: {
-      timeout: 5000
-    }
-  })
+  return new DocumentClient()
 }

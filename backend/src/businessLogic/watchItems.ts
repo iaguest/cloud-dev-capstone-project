@@ -84,6 +84,23 @@ export async function refreshWatchItem(
   return await dbAccess.refreshWatchItem(watchItemRefresh, userId, watchId)
 }
 
+export async function refreshAllWatchItems(
+) : Promise<WatchItem[]> {
+  const dbAccess = new DbAccess()
+
+  let refreshedItems: WatchItem[] = []
+  const allWatchItems = await dbAccess.getAllWatchItems()
+  if (allWatchItems.length > 0) {
+    for (const watchItem of allWatchItems) {
+      refreshedItems.push(await refreshWatchItem(watchItem.userId, watchItem.watchId))
+    }
+  } else {
+    console.log("Nothing to update")
+  }
+
+  return refreshedItems
+}
+
 export async function deleteWatchItem(
   userId: string,
   watchId: string
