@@ -114,8 +114,8 @@ functions:
   ScheduledRefresh:
     handler: src/lambda/schedule/refreshAllWatchItems.handler
     events:
-      - schedule: rate(5 minutes)
-      # - schedule: cron(0 8-16 ? * MON-FRI *)
+      #- schedule: rate(5 minutes)
+      - schedule: cron(0 8-16 ? * MON-FRI *)
     iamRoleStatements:
       - Effect: Allow
         Action:
