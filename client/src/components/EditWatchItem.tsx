@@ -59,6 +59,9 @@ export class EditWatchItem extends React.PureComponent<
             <input type="submit" value="Apply" />
           </Form.Field>
         </Form>
+
+        <br/>
+        <p>Applying an empty value will clear any pre-existing alert</p>
       </div>
     )
   }

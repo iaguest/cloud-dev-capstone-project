@@ -130,6 +130,10 @@ function isTriggerAlert(previousPrice: number,
     return false
   }
 
+  if (currentPrice === alertPrice) {
+    return true
+  }
+
   if ((previousPrice < alertPrice) && (alertPrice < currentPrice)) {
     return true
   }
