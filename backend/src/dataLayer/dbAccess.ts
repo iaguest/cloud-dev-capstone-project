@@ -103,9 +103,11 @@ export class DbAccess {
         'userId' : userId,
         'watchId' : watchId
       },
-      UpdateExpression: 'set alertPrice = :alertPrice',
+      // HACK XXX: resetting alertTriggered here is a bit hacky, but pragmatic for now.
+      UpdateExpression: 'set alertPrice = :alertPrice, alertTriggered = :alertTriggered',
       ExpressionAttributeValues: {
         ':alertPrice' : watchItemUpdate.alertPrice,
+        ':alertTriggered' : false
       },
       ReturnValues:"ALL_NEW"
     }).promise()
