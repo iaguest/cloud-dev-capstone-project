@@ -18,7 +18,6 @@ export class DbAccess {
     console.log(`In watchItemExists for userId ${userId}, watchId ${watchId}...`)
   
     const result = await this.docClient.get({
-      ConsistentRead: true,
       TableName: this.watchTable,
       Key: {
         'userId' : userId,
@@ -38,7 +37,6 @@ export class DbAccess {
   : Promise<WatchItem> {
 
     const result = await this.docClient.get({
-      ConsistentRead: true,
       TableName: this.watchTable,
       Key: {
         'userId' : userId,
@@ -53,7 +51,6 @@ export class DbAccess {
     console.log(`In getWatchItems for userId ${userId}...`)
 
     const result = await this.docClient.query({
-      ConsistentRead: true,
       TableName: this.watchTable,
       KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeValues: {
@@ -73,7 +70,6 @@ export class DbAccess {
 
   //   // Scan operation parameters
   //   const scanParams = {
-  //     ConsistentRead: true,
   //     TableName: this.watchTable,
   //     // Limit: limit,
   //     // ExclusiveStartKey: nextKey
