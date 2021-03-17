@@ -124,6 +124,13 @@ functions:
           - dynamodb:GetItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WATCH_TABLE}
 
+  CheckAlertStatus:
+    handler: src/lambda/dynamoDb/checkAlertStatus.handler
+    events:
+      - stream:
+          type: dynamodb
+          arn: !GetAtt WatchItemsDynamoDBTable.StreamArn
+
   # TODO: Configure this function
   # GenerateUploadUrl:
   #   handler: src/lambda/http/generateUploadUrl.handler
@@ -175,6 +182,8 @@ resources:
           - AttributeName: watchId
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
         TableName: ${self:provider.environment.WATCH_TABLE}
 
     AttachmentsBucket:
