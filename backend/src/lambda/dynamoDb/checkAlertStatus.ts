@@ -1,3 +1,5 @@
+import * as AWS  from 'aws-sdk'
+
 import { DynamoDBStreamEvent, DynamoDBStreamHandler } from 'aws-lambda'
 import 'source-map-support/register'
 
@@ -34,5 +36,43 @@ export const handler: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent)
     }
 
     console.log("**** TRIGGER NOTIFICATION ****")
+    await sendAlertEmailNotification(currentWatchItem.ticker, currentWatchItem.price, currentWatchItem.currency)
   }
+}
+
+async function sendAlertEmailNotification(ticker: string, price: number, currency: string) {
+  console.log(`In sendAlertEmailNotification for ${ticker}@${price}${currency}`)
+
+  // Create sendEmail params 
+  var params = {
+    Destination: { /* required */
+      ToAddresses: [
+        '<**** TARGET_EMAIL ****>',
+        /* more items */
+      ]
+    },
+    Message: { /* required */
+      Body: { /* required */
+        Text: {
+        Charset: "UTF-8",
+        Data: `Your alert for ${ticker} at ${price}${currency} has been triggered.`
+        }
+      },
+       Subject: {
+        Charset: 'UTF-8',
+        Data: `Watch list alert ${ticker}`
+       }
+      },
+    Source: '<**** SOURCE_EMAIL ****>', /* required */
+  };
+
+  console.log("Sending email...")
+  try {
+    await new AWS.SES({apiVersion: '2010-12-01'}).sendEmail(params).promise()
+    console.log("... email sent")
+  } catch (e) {
+    console.log(`... email send failed: ${e.message}`)
+  }
+  
+  console.log("... exiting sendAlertEmailNotification")
 }
