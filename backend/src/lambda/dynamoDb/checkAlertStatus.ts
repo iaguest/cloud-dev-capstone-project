@@ -41,7 +41,7 @@ export const handler: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent)
 }
 
 async function sendAlertEmailNotification(ticker: string, price: number, currency: string) {
-  console.log(`In sendAlertEmailNotification for ${ticker}@${price}${currency}`)
+  console.log(`In sendAlertEmailNotification for ${ticker}@${price} ${currency}`)
 
   // Create sendEmail params 
   var params = {
