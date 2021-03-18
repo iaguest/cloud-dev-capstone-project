@@ -49,7 +49,9 @@ functions:
           path: userinfo
           cors: true
           authorizer: Auth
-    # TODO: Validate data
+          request:
+            schema:
+              application/json: ${file(models/updateuserinfo-request.json)}
     iamRoleStatements:
       - Effect: Allow
         Action:

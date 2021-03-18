@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "update user info item",
+  "type": "object",
+  "properties": {
+    "email": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "string" }
+      ]
+    },
+    "avatarUrl": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "string" }
+      ]
+    }
+  },
+  "additionalProperties": false
+}
