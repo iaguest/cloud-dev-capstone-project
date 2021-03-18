@@ -7,7 +7,7 @@ import { refreshWatchItem } from '../../businessLogic/watchItems'
 import { WatchItem } from '../../models/WatchItem'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  console.log('Processing event: ', event)
+  console.log('In refreshWatchItem handler, processing event: ', event)
 
   const watchId = event.pathParameters.watchId
 

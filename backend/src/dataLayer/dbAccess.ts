@@ -1,5 +1,8 @@
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 
+import { UserInfoItem } from '../models/UserInfoItem'
+import { UserInfoUpdate } from '../models/UserInfoUpdate'
+
 import { WatchItem } from '../models/WatchItem'
 import { WatchItemRefresh } from '../models/WatchItemRefresh'
 import { WatchItemUpdate } from '../models/WatchItemUpdate'
@@ -11,7 +14,42 @@ export class DbAccess {
 
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
+    private readonly userInfoTable = process.env.USER_INFO_TABLE,
     private readonly watchTable = process.env.WATCH_TABLE) {
+  }
+
+  async getUserInfoItem(userId: string) : Promise<UserInfoItem> {
+    console.log("In getUserInfoItem...")
+
+    const result = await this.docClient.get({
+      TableName: this.userInfoTable,
+      Key: { 'userId' : userId }
+    }).promise()
+
+    const item = (result.Item) ? result.Item as UserInfoItem : undefined
+    
+    console.log(`... exiting getUserInfoItem, returning result item: ${JSON.stringify(item)}`)
+    return item
+  }
+
+  async updateUserInfoItem(userInfoUpdate: UserInfoUpdate, userId: string) : Promise<UserInfoItem> {
+    console.log("In updateUserInfoItem...")
+
+    const result = await this.docClient.update({
+      TableName: this.userInfoTable,
+      Key: {
+        'userId' : userId,
+      },
+      UpdateExpression: 'set email = :email, avatarUrl = :avatarUrl',
+      ExpressionAttributeValues: {
+        ':email' : userInfoUpdate.email,
+        ':avatarUrl' : userInfoUpdate.avatarUrl
+      },
+      ReturnValues:"ALL_NEW"
+    }).promise()
+
+    console.log("... completed updateUserInfoItem")
+    return result.Attributes as UserInfoItem
   }
 
   async watchItemExists(userId: string, watchId: string): Promise<boolean> {

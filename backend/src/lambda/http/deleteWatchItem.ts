@@ -6,7 +6,7 @@ import { getUserId, buildHttpResponse } from '../utils'
 import { deleteWatchItem } from '../../businessLogic/watchItems'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  console.log('Processing event: ', event)
+  console.log('In deleteWatchItem handler, processing event: ', event)
 
   const watchId = event.pathParameters.watchId
   const userId: string = getUserId(event)

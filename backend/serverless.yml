@@ -27,6 +27,35 @@ functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
+  GetUserInfo:
+    handler: src/lambda/http/getUserInfo.handler
+    events:
+      - http:
+          method: get
+          path: userinfo
+          cors: true
+          authorizer: Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_INFO_TABLE}
+
+  UpdateUserInfo:
+    handler: src/lambda/http/updateUserInfo.handler
+    events:
+      - http:
+          method: post
+          path: userinfo
+          cors: true
+          authorizer: Auth
+    # TODO: Validate data
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_INFO_TABLE}
+
   GetWatchItems:
     handler: src/lambda/http/getWatchItems.handler
     events:

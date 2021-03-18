@@ -6,7 +6,7 @@ import { getWatchItems } from '../../businessLogic/watchItems';
 import { WatchItem } from '../../models/WatchItem'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  console.log('Processing event: ', event)
+  console.log('In getWatchItems handler, processing event: ', event)
   let watchItems: WatchItem[]
 
   try {

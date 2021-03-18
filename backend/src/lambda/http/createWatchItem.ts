@@ -8,7 +8,7 @@ import { getUserId, buildHttpResponse } from '../utils'
 import { WatchItem } from '../../models/WatchItem'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  console.log('Processing event: ', event)
+  console.log('In createWatchItem handler, processing event: ', event)
 
   const newWatchItem: CreateWatchItemRequest = JSON.parse(event.body)
   let newItem: WatchItem = undefined
