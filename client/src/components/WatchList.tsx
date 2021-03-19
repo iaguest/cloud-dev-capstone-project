@@ -101,18 +101,44 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
   render() {
     return (
       <div>
-
         <Header as="h1">Watch List</Header>
-        <Divider />
-        <Button
-          icon
-          color="blue"
-          onClick={() => { this.onWatchListRefresh() }}>
-          <Icon name="refresh" />
-        </Button>   
-        <Divider />         
 
-        {this.renderCreateWatchItemInput()}
+        <Grid centered>
+          <Grid.Row centered>
+            <Grid.Column textAlign='center' width={6}>
+              {this.renderCreateWatchItemInput()}
+            </Grid.Column>
+            <Grid.Column textAlign='center' width={6}>
+              <Input
+              action={{
+                color: 'teal',
+                labelPosition: 'left',
+                icon: 'envelope outline',
+                content: 'Alert email address',
+                // onClick: this.onWatchItemCreate
+              }}
+              fluid
+              actionPosition="left"
+              placeholder="foo@email.com"
+              onChange={this.handleTickerChange}
+            />
+            </Grid.Column>
+            <Grid.Column textAlign='center' width={4}>
+              <Button
+                icon
+                color="blue"
+                onClick={() => { this.onWatchListRefresh() }}>
+                <Icon name="refresh" />
+              </Button>   
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+
+
+
+        <Divider/>
+
+        
 
         {this.renderWatchList()}
       </div>
@@ -136,9 +162,6 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
             placeholder="AAPL"
             onChange={this.handleTickerChange}
           />
-        </Grid.Column>
-        <Grid.Column width={16}>
-          <Divider />
         </Grid.Column>
       </Grid.Row>
     )
@@ -186,7 +209,7 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
                   color="blue"
                   onClick={() => this.onEditButtonClick(watchItem.watchId)}
                 >
-                  <Icon name="pencil" />
+                  <Icon name="alarm" />
                 </Button>
               </Grid.Column>
               <Grid.Column width={1} floated="right">
