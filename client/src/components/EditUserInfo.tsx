@@ -9,7 +9,7 @@ enum UploadState {
   UploadingFile,
 }
 
-interface EditTodoProps {
+interface EditUserInfoProps {
   match: {
     params: {
       todoId: string
@@ -18,16 +18,16 @@ interface EditTodoProps {
   auth: Auth
 }
 
-interface EditTodoState {
+interface EditUserInfoState {
   file: any
   uploadState: UploadState
 }
 
-export class EditTodo extends React.PureComponent<
-  EditTodoProps,
-  EditTodoState
+export class EditUserInfo extends React.PureComponent<
+  EditUserInfoProps,
+  EditUserInfoState
 > {
-  state: EditTodoState = {
+  state: EditUserInfoState = {
     file: undefined,
     uploadState: UploadState.NoUpload
   }
@@ -73,7 +73,7 @@ export class EditTodo extends React.PureComponent<
   render() {
     return (
       <div>
-        <h1>Upload new image</h1>
+        <h1>Upload new avatar image</h1>
 
         <Form onSubmit={this.handleSubmit}>
           <Form.Field>

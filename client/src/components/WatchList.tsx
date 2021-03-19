@@ -40,8 +40,12 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
     this.setState({ newTicker: event.target.value })
   }
 
-  onEditButtonClick = (watchId: string) => {
+  onEditWatchItemButtonClick = (watchId: string) => {
     this.props.history.push(`/watchlist/${watchId}/edit`)
+  }
+
+  onAvatarImageButtonClick = () => {
+    this.props.history.push("/userinfo/edit")
   }
 
   onWatchListRefresh = async () => {
@@ -103,18 +107,18 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
       <div>
         <Header as="h1">Watch List</Header>
         <Image
-          onClick={()=>{ console.log("Press")}}
+          onClick={()=>{ this.onAvatarImageButtonClick() }}
           src='https://react.semantic-ui.com/images/wireframe/square-image.png'
           size="tiny"
           rounded>
         </Image>
         <Divider/>
-        <Grid centered>
+        <Grid centered padded>
           <Grid.Row centered>
-            <Grid.Column textAlign='center' width={6}>
+            <Grid.Column textAlign='center' width={7}>
               {this.renderCreateWatchItemInput()}
             </Grid.Column>
-            <Grid.Column textAlign='center' width={6}>
+            <Grid.Column textAlign='center' width={7}>
               <Input
               action={{
                 color: 'teal',
@@ -129,7 +133,7 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
               onChange={this.handleTickerChange}
             />
             </Grid.Column>
-            <Grid.Column textAlign='center' width={4}>
+            <Grid.Column textAlign='center' width={2}>
               <Button
                 icon
                 color="blue"
@@ -203,14 +207,14 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
               <Grid.Column width={3} verticalAlign="middle" style={{ color: watchItem.alertTriggered ? "red" : "black" }}>
                 {watchItem.price.toFixed(2)}{watchItem.currency} {(watchItem.alertPrice ? `[${watchItem.alertPrice.toFixed(2)}]` : '')}
               </Grid.Column>
-              <Grid.Column width={3} verticalAlign="middle">
+              <Grid.Column width={4} verticalAlign="middle">
                 {watchItem.timeStamp}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   color="blue"
-                  onClick={() => this.onEditButtonClick(watchItem.watchId)}
+                  onClick={() => this.onEditWatchItemButtonClick(watchItem.watchId)}
                 >
                   <Icon name="alarm" />
                 </Button>
@@ -233,11 +237,4 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
       </Grid>
     )
   }
-
-  // calculateDueDate(): string {
-  //   const date = new Date()
-  //   date.setDate(date.getDate() + 7)
-
-  //   return dateFormat(date, 'yyyy-mm-dd') as string
-  // }
 }

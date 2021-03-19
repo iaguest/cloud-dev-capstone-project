@@ -3,6 +3,7 @@ import { Link, Route, Router, Switch } from 'react-router-dom'
 import { Grid, Menu, Segment } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
+import { EditUserInfo } from './components/EditUserInfo'
 import { EditWatchItem } from './components/EditWatchItem'
 import { LogIn } from './components/LogIn'
 import { NotFound } from './components/NotFound'
@@ -101,6 +102,14 @@ export default class App extends Component<AppProps, AppState> {
           exact
           render={props => {
             return <EditWatchItem {...props} auth={this.props.auth} />
+          }}
+        />
+
+        <Route
+          path="/userinfo/edit"
+          exact
+          render={props => {
+            return <EditUserInfo {...props} auth={this.props.auth} />
           }}
         />
 
