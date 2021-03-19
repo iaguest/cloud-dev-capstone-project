@@ -102,7 +102,13 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
     return (
       <div>
         <Header as="h1">Watch List</Header>
-
+        <Image
+          onClick={()=>{ console.log("Press")}}
+          src='https://react.semantic-ui.com/images/wireframe/square-image.png'
+          size="tiny"
+          rounded>
+        </Image>
+        <Divider/>
         <Grid centered>
           <Grid.Row centered>
             <Grid.Column textAlign='center' width={6}>
@@ -134,13 +140,10 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
           </Grid.Row>
         </Grid>
 
-
-
         <Divider/>
 
-        
-
         {this.renderWatchList()}
+
       </div>
     )
   }
