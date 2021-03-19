@@ -1,4 +1,4 @@
-export interface UserInfoUpdate {
+export interface UserInfoItem {
   email?: string
   avatarUrl?: string    
 }
