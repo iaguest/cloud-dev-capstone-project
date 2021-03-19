@@ -2,53 +2,28 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
-// import { getUserId } from '../utils'
-// import { getTodoItemUploadUrl, getTodoItemAttachmentUrl } from '../../dataLayer/fileAccess'
-// import { setTodoItemAttachmentUrl } from '../../businessLogic/todos'
+import { getUserId, buildHttpResponse } from '../utils'
+import { getUserInfoUploadUrl, getUserInfoAttachmentUrl } from '../../dataLayer/fileAccess'
+import { updateUserInfoItem } from '../../businessLogic/userInfo'
+import { UserInfoUpdate } from '../../models/UserInfoUpdate'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('Processing event: ', event)
 
-  // const todoId = event.pathParameters.todoId
-  // const userId: string = getUserId(event)
+  const userId: string = getUserId(event)
 
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Credentials': true
+  const updatedUserInfoItem: UserInfoUpdate = {
+    avatarUrl: getUserInfoAttachmentUrl(userId)
   }
 
-  // // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
-
-  // const attachmentUrl = getTodoItemAttachmentUrl(todoId)
-
-  // try {
-  //   await setTodoItemAttachmentUrl(userId, todoId, attachmentUrl)
-  // }
-  // catch (e) {
-  //   return {
-  //     statusCode: 400,
-  //     headers: headers,
-  //     body: JSON.stringify({
-  //       error: `Setting Attachment Url failed: ${e.message}`
-  //     })
-  //   }
-  // }
-
-  // const uploadUrl = getTodoItemUploadUrl(todoId);
-
-  // return {
-  //   statusCode: 201,
-  //   headers: headers,
-  //   body: JSON.stringify({
-  //     uploadUrl: uploadUrl
-  //   })
-  // }
-
-  // TODO: DELETE THIS!
-  return {
-    statusCode: 400,
-    headers: headers,
-    body: "Not implemented"
+  try {
+    await updateUserInfoItem(updatedUserInfoItem, getUserId(event))
+  }
+  catch (e) {
+    return buildHttpResponse(500, {error: `Setting avatar url failed: : ${e.message}`})
   }
 
+  const uploadUrl = getUserInfoUploadUrl(userId);
+
+  return buildHttpResponse(201, { uploadUrl: uploadUrl })
 }
