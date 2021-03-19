@@ -1,5 +1,5 @@
 export interface UserInfoItem {
   userId: string
-  email?: string,
+  email?: string
   avatarUrl?: string
 }
