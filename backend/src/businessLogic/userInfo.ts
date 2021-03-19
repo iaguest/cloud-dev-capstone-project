@@ -10,7 +10,7 @@ export async function getUserInfoItemOrDefault(userId: string
   const dbAccess = new DbAccess()
   const item = await dbAccess.getUserInfoItem(userId)
   if (item === undefined) {
-    const defaultItem: UserInfoItem = { userId: userId, email: null, avatarUrl: null }
+    const defaultItem: UserInfoItem = { userId: userId }
     console.log(`Returning default item: ${JSON.stringify(defaultItem)}`)
     return defaultItem
   }

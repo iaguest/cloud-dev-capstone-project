@@ -35,16 +35,21 @@ export class DbAccess {
   async updateUserInfoItem(userInfoUpdate: UserInfoUpdate, userId: string) : Promise<UserInfoItem> {
     console.log("In updateUserInfoItem...")
 
+    const expAttribValues = {
+      ':email' : userInfoUpdate.email,
+      ':avatarUrl' : userInfoUpdate.avatarUrl
+    }
+
+    const expressionString = buildUpdateExpressionString(expAttribValues)
+    console.log(`Expression string is: ${expressionString}`)
+
     const result = await this.docClient.update({
       TableName: this.userInfoTable,
       Key: {
         'userId' : userId,
       },
-      UpdateExpression: 'set email = :email, avatarUrl = :avatarUrl',
-      ExpressionAttributeValues: {
-        ':email' : userInfoUpdate.email,
-        ':avatarUrl' : userInfoUpdate.avatarUrl
-      },
+      UpdateExpression: expressionString,
+      ExpressionAttributeValues: expAttribValues,
       ReturnValues:"ALL_NEW"
     }).promise()
 
@@ -205,6 +210,23 @@ export class DbAccess {
   //   }).promise()
   // }
 
+}
+
+function buildUpdateExpressionString(expressionAttributeValues: object
+) : string {
+  let expressionString: string = 'set '
+  const kvps = Object.entries(expressionAttributeValues)
+  if (kvps.length < 1) {
+    throw RangeError("expressionAttributeValues must not be empty")
+  }
+  for (const [key, value] of kvps) {
+    console.log(`${key}:${value}`)
+    if (value === undefined) {
+      continue
+    }
+    expressionString += `${key.substring(1)} = ${key},`
+  }
+  return expressionString.slice(0, -1)
 }
 
 function createDynamoDBClient() {
