@@ -38,3 +38,19 @@ export async function updateUserInfo(
   console.log(`... response item is ${JSON.stringify(item)}, exiting updateUserInfo`)
   return item
 }
+
+export async function getUploadUrl(
+  idToken: string
+): Promise<string> {
+  const response = await Axios.post(`${apiEndpoint}/userinfo/attachment`, '', {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    }
+  })
+  return response.data.uploadUrl
+}
+
+export async function uploadFile(uploadUrl: string, file: Buffer): Promise<void> {
+  await Axios.put(uploadUrl, file)
+}

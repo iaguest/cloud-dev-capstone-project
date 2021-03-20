@@ -14,8 +14,10 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createWatchItem, deleteWatchItem, getWatchItems, patchWatchItem, refreshWatchItem } from '../api/watchlist-api'
+import { getUserInfo } from '../api/userinfo-api'
+import { createWatchItem, deleteWatchItem, getWatchItems, refreshWatchItem } from '../api/watchlist-api'
 import Auth from '../auth/Auth'
+import { UserInfoItem } from '../types/UserInfoItem'
 import { WatchItem } from '../types/WatchItem'
 
 interface WatchListProps {
@@ -24,13 +26,18 @@ interface WatchListProps {
 }
 
 interface WatchListState {
+  userInfo: UserInfoItem
   watchItems: WatchItem[]
   newTicker: string
   loadingWatchItems: boolean
 }
 
 export class WatchList extends React.PureComponent<WatchListProps, WatchListState> {
+
+  defaultAvatarUrl: string = 'https://react.semantic-ui.com/images/wireframe/square-image.png'
+
   state: WatchListState = {
+    userInfo: {},
     watchItems: [],
     newTicker: '',
     loadingWatchItems: true
@@ -92,25 +99,29 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
 
   async componentDidMount() {
     try {
-      const watchItems = await getWatchItems(this.props.auth.getIdToken())
+      const token = this.props.auth.getIdToken()
+      const userInfo = await getUserInfo(token)
+      const watchItems = await getWatchItems(token)
       this.setState({
+        userInfo: userInfo,
         watchItems: watchItems,
         loadingWatchItems: false
       })
     } catch (e) {
-      alert(`Failed to fetch watch items: ${e.message}`)
+      alert(`Failed to fetch required data: ${e.message}`)
     }
   }
 
   render() {
     return (
       <div>
-        <Header as="h1">Watch List</Header>
+        <Header as="h1">My Watchlist</Header>
         <Image
           onClick={()=>{ this.onAvatarImageButtonClick() }}
-          src='https://react.semantic-ui.com/images/wireframe/square-image.png'
+          src={ (this.state.userInfo.avatarUrl) ? this.state.userInfo.avatarUrl : this.defaultAvatarUrl }
           size="tiny"
-          rounded>
+          circular
+          verticalAlign='bottom'>
         </Image>
         <Divider/>
         <Grid centered padded>

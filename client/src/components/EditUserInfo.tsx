@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
-import { getUploadUrl, uploadFile } from '../api/watchlist-api'
+import { getUploadUrl, uploadFile } from '../api/userinfo-api'
 
 enum UploadState {
   NoUpload,
@@ -10,11 +10,11 @@ enum UploadState {
 }
 
 interface EditUserInfoProps {
-  match: {
-    params: {
-      todoId: string
-    }
-  }
+  // match: {
+  //   params: {
+  //     userId: string
+  //   }
+  // }
   auth: Auth
 }
 
@@ -51,7 +51,7 @@ export class EditUserInfo extends React.PureComponent<
       }
 
       this.setUploadState(UploadState.FetchingPresignedUrl)
-      const uploadUrl = await getUploadUrl(this.props.auth.getIdToken(), this.props.match.params.todoId)
+      const uploadUrl = await getUploadUrl(this.props.auth.getIdToken())
 
       this.setUploadState(UploadState.UploadingFile)
       await uploadFile(uploadUrl, this.state.file)
