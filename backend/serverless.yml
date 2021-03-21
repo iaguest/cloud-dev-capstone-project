@@ -55,8 +55,14 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
+          - dynamodb:GetItem    # DELETE THIS!
           - dynamodb:UpdateItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_INFO_TABLE}
+      # DELETE THIS!
+      - Effect: Allow
+        Action:
+          - ses:VerifyEmailIdentity
+        Resource: arn:aws:ses:${self:provider.region}:*:identity/*
 
   GetWatchItems:
     handler: src/lambda/http/getWatchItems.handler

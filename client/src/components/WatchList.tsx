@@ -118,11 +118,10 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
     try {
       const updatedItem = await updateUserInfo(this.props.auth.getIdToken(), updateUserInfoRequest)
       console.log(`Update user info: ${JSON.stringify(updatedItem)}`)
-    } catch {
-      alert('Alert email address update failed')
+      alert('Alert email address updated')
+    } catch (e) {
+      alert(` Alert email address update failed ${e.message} `)
     }
-
-    alert('Alert email address updated')
   }
 
   async componentDidMount() {

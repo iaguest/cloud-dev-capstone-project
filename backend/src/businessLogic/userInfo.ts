@@ -1,3 +1,5 @@
+import * as AWS  from 'aws-sdk'
+
 import { UserInfoItem } from '../models/UserInfoItem'
 import { UserInfoUpdate } from '../models/UserInfoUpdate'
 
@@ -22,5 +24,15 @@ export async function getUserInfoItemOrDefault(userId: string
 export async function updateUserInfoItem(userInfoUpdate: UserInfoUpdate, userId: string
 ) : Promise<UserInfoItem> {
   const dbAccess = new DbAccess()
-  return await dbAccess.updateUserInfoItem(userInfoUpdate, userId)
+  const previousItem = await dbAccess.getUserInfoItem(userId)
+  const updatedItem = await dbAccess.updateUserInfoItem(userInfoUpdate, userId)
+
+  // HACK XXX: Should really be pulled out of here
+  if ((previousItem === undefined || !(previousItem.email)) && updatedItem.email) {
+    console.log(`Sending verification email to ${userInfoUpdate.email}...`)
+    const params = { EmailAddress: userInfoUpdate.email }
+    await new AWS.SES({apiVersion: '2010-12-01'}).verifyEmailIdentity(params).promise()
+  }
+
+  return updatedItem
 }
