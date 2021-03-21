@@ -1,6 +1,7 @@
 import dateFormat from 'dateformat'
 import { History } from 'history'
 import update from 'immutability-helper'
+import { userInfo } from 'os'
 import * as React from 'react'
 import {
   Button,
@@ -15,9 +16,11 @@ import {
 } from 'semantic-ui-react'
 
 import { getUserInfo } from '../api/userinfo-api'
+import { updateUserInfo } from '../api/userinfo-api'
 import { createWatchItem, deleteWatchItem, getWatchItems, refreshWatchItem } from '../api/watchlist-api'
 import Auth from '../auth/Auth'
 import { UserInfoItem } from '../types/UserInfoItem'
+import { UpdateUserInfoRequest } from '../types/UpdateUserInfoRequest'
 import { WatchItem } from '../types/WatchItem'
 
 interface WatchListProps {
@@ -45,6 +48,15 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
 
   handleTickerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newTicker: event.target.value })
+  }
+
+  handleAlertUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(`handleAlertUrlChange: ${event.target.value}`)
+    const updatedValue: UserInfoItem = {
+      email: (event.target.value) ? event.target.value : undefined,
+      avatarUrl: this.state.userInfo.avatarUrl
+    }
+    this.setState({ userInfo: updatedValue })
   }
 
   onEditWatchItemButtonClick = (watchId: string) => {
@@ -97,7 +109,24 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
     }
   }
 
+  onUpdateAlertUrl = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+
+    const updateUserInfoRequest: UpdateUserInfoRequest = {
+      ...this.state.userInfo
+    }
+
+    try {
+      const updatedItem = await updateUserInfo(this.props.auth.getIdToken(), updateUserInfoRequest)
+      console.log(`Update user info: ${JSON.stringify(updatedItem)}`)
+    } catch {
+      alert('Alert email address update failed')
+    }
+
+    alert('Alert email address updated')
+  }
+
   async componentDidMount() {
+    console.log("In componentDidMount...")
     try {
       const token = this.props.auth.getIdToken()
       const userInfo = await getUserInfo(token)
@@ -110,12 +139,15 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
     } catch (e) {
       alert(`Failed to fetch required data: ${e.message}`)
     }
+    console.log(`... userInfo is ${JSON.stringify(this.state.userInfo)}`)
   }
 
   render() {
+    console.log("In render...")
     return (
       <div>
         <Header as="h1">My Watchlist</Header>
+
         <Image
           onClick={()=>{ this.onAvatarImageButtonClick() }}
           src={ (this.state.userInfo.avatarUrl) ? this.state.userInfo.avatarUrl : this.defaultAvatarUrl }
@@ -123,27 +155,31 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
           circular
           verticalAlign='bottom'>
         </Image>
+
         <Divider/>
+
         <Grid centered padded>
           <Grid.Row centered>
+
             <Grid.Column textAlign='center' width={7}>
               {this.renderCreateWatchItemInput()}
             </Grid.Column>
+
             <Grid.Column textAlign='center' width={7}>
               <Input
               action={{
                 color: 'teal',
                 labelPosition: 'left',
-                icon: 'envelope outline',
+                icon: 'add',
                 content: 'Alert email address',
-                // onClick: this.onWatchItemCreate
+                onClick: this.onUpdateAlertUrl
               }}
               fluid
               actionPosition="left"
-              placeholder="foo@email.com"
-              onChange={this.handleTickerChange}
-            />
+              placeholder={(this.state.userInfo.email) ? this.state.userInfo.email : ''}
+              onChange={this.handleAlertUrlChange}/>
             </Grid.Column>
+
             <Grid.Column textAlign='center' width={2}>
               <Button
                 icon
@@ -152,6 +188,7 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
                 <Icon name="refresh" />
               </Button>   
             </Grid.Column>
+
           </Grid.Row>
         </Grid>
 
