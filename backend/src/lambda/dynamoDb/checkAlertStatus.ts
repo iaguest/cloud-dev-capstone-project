@@ -1,9 +1,8 @@
-import * as AWS  from 'aws-sdk'
-
 import { DynamoDBStreamEvent, DynamoDBStreamHandler } from 'aws-lambda'
 import 'source-map-support/register'
 
 import { DbAccess } from '../../dataLayer/dbAccess'
+import { trySendAlertEmailNotification } from '../../dataLayer/emailAccess'
 import { getUserInfoItemOrDefault } from '../../businessLogic/userInfo'
 
 export const handler: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent) => {
@@ -26,7 +25,6 @@ export const handler: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent)
 
     const userId = previousItem.userId.S
     const userInfo = await getUserInfoItemOrDefault(userId)
-    // TODO: check is verified aswell?
     if (!userInfo.email) {
       console.log('No email available for this userId so skip this record...')
       continue
@@ -45,43 +43,8 @@ export const handler: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent)
     }
 
     console.log("**** TRIGGER NOTIFICATION ****")
-    await sendAlertEmailNotification(userInfo.email, currentWatchItem.ticker, currentWatchItem.price, currentWatchItem.currency)
+    await trySendAlertEmailNotification(
+      userInfo.email, currentWatchItem.ticker, currentWatchItem.price, currentWatchItem.currency
+    )
   }
-}
-
-async function sendAlertEmailNotification(targetEmail: string, ticker: string, price: number, currency: string) {
-  console.log(`In sendAlertEmailNotification for ${ticker}@${price} ${currency}`)
-
-  // Create sendEmail params 
-  var params = {
-    Destination: { /* required */
-      ToAddresses: [
-        targetEmail,
-        /* more items */
-      ]
-    },
-    Message: { /* required */
-      Body: { /* required */
-        Text: {
-        Charset: "UTF-8",
-        Data: `Your alert for ${ticker} at ${price}${currency} has been triggered.`
-        }
-      },
-       Subject: {
-        Charset: 'UTF-8',
-        Data: `Watch list alert ${ticker}`
-       }
-      },
-    Source: '<**** SOURCE_EMAIL ****>', /* required */
-  };
-
-  console.log("Sending email...")
-  try {
-    await new AWS.SES({apiVersion: '2010-12-01'}).sendEmail(params).promise()
-    console.log("... email sent")
-  } catch (e) {
-    console.log(`... email send failed: ${e.message}`)
-  }
-  
-  console.log("... exiting sendAlertEmailNotification")
 }

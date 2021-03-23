@@ -1,9 +1,8 @@
-import * as AWS  from 'aws-sdk'
-
 import { UserInfoItem } from '../models/UserInfoItem'
 import { UserInfoUpdate } from '../models/UserInfoUpdate'
 
 import { DbAccess } from '../dataLayer/dbAccess'
+import { trySendVerificationEmailForNewAddress } from '../dataLayer/emailAccess'
 
 export async function getUserInfoItemOrDefault(userId: string
 ) : Promise<UserInfoItem> {
@@ -27,17 +26,9 @@ export async function updateUserInfoItem(userInfoUpdate: UserInfoUpdate, userId:
   const previousItem = await dbAccess.getUserInfoItem(userId)
   const updatedItem = await dbAccess.updateUserInfoItem(userInfoUpdate, userId)
 
-  // HACK XXX: Should really be pulled out of here
+  // HACK XXX: Should really be pulled out of here - separation of concerns
   if ((previousItem === undefined || !(previousItem.email)) && updatedItem.email) {
-    console.log(`Sending verification email to ${userInfoUpdate.email}...`)
-
-    console.log(`Try verify email identity...`)
-    const verifyResult = await new AWS.SES({
-      apiVersion: '2010-12-01',
-      accessKeyId: "<ACCESS_KEY_ID>",
-      secretAccessKey: "<SECRET_ACCESS_KEY>"
-    }).verifyEmailIdentity({EmailAddress:updatedItem.email}).promise()
-    console.log(`verify email identity call results: ${JSON.stringify(verifyResult)}`)
+    await trySendVerificationEmailForNewAddress(userInfoUpdate.email)
   }
 
   return updatedItem
