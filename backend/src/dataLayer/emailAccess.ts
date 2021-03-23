@@ -1,5 +1,9 @@
 import * as AWS  from 'aws-sdk'
 
+const ssmSourceEmail = process.env.EMAIL_SOURCE
+const ssmAccessKeyId = process.env.KEY_ID
+const ssmSecretAccessKey = process.env.ACCESS_KEY
+
 export async function trySendAlertEmailNotification(targetEmail: string, ticker: string, price: number, currency: string) {
   console.log(`In sendAlertEmailNotification for ${ticker}@${price} ${currency}`)
 
@@ -23,7 +27,7 @@ export async function trySendAlertEmailNotification(targetEmail: string, ticker:
         Data: `Watch list alert ${ticker}`
        }
       },
-    Source: '<**** SOURCE_EMAIL ****>', /* required */
+    Source: ssmSourceEmail, /* required */
   };
 
   console.log("Sending email...")
@@ -43,8 +47,8 @@ export async function trySendVerificationEmailForNewAddress(email: string) {
   try {
     const verifyResult = await new AWS.SES({
       apiVersion: '2010-12-01',
-      accessKeyId: "<ACCESS_KEY_ID>",
-      secretAccessKey: "<SECRET_ACCESS_KEY>"
+      accessKeyId: ssmAccessKeyId,
+      secretAccessKey: ssmSecretAccessKey
     }).verifyEmailIdentity({EmailAddress: email}).promise()
     console.log(`verifyEmailIdentity returned: ${JSON.stringify(verifyResult)}`)
   } catch (e) {

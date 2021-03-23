@@ -27,7 +27,8 @@ export async function updateUserInfoItem(userInfoUpdate: UserInfoUpdate, userId:
   const updatedItem = await dbAccess.updateUserInfoItem(userInfoUpdate, userId)
 
   // HACK XXX: Should really be pulled out of here - separation of concerns
-  if (previousItem !== undefined && updatedItem.email && previousItem.email !== updatedItem.email) {
+  if ((previousItem !== undefined && updatedItem.email && previousItem.email !== updatedItem.email) ||
+      (previousItem === undefined && updatedItem.email)) {
     await trySendVerificationEmailForNewAddress(userInfoUpdate.email)
   }
 

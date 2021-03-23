@@ -21,6 +21,9 @@ provider:
     SIGNED_URL_EXPIRATION: 300
     WATCH_TABLE: Watch-${self:provider.stage}
     USER_INFO_TABLE: User-Info-${self:provider.stage}
+    EMAIL_SOURCE: ${ssm:/capstone-email-source~true}
+    KEY_ID: ${ssm:/capstone-key-id~true}
+    ACCESS_KEY: ${ssm:/capstone-access-key~true}
 
 functions:
 
