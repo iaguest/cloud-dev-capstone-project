@@ -30,8 +30,14 @@ export async function updateUserInfoItem(userInfoUpdate: UserInfoUpdate, userId:
   // HACK XXX: Should really be pulled out of here
   if ((previousItem === undefined || !(previousItem.email)) && updatedItem.email) {
     console.log(`Sending verification email to ${userInfoUpdate.email}...`)
-    const params = { EmailAddress: userInfoUpdate.email }
-    await new AWS.SES({apiVersion: '2010-12-01'}).verifyEmailIdentity(params).promise()
+
+    console.log(`Try verify email identity...`)
+    const verifyResult = await new AWS.SES({
+      apiVersion: '2010-12-01',
+      accessKeyId: "<ACCESS_KEY_ID>",
+      secretAccessKey: "<SECRET_ACCESS_KEY>"
+    }).verifyEmailIdentity({EmailAddress:updatedItem.email}).promise()
+    console.log(`verify email identity call results: ${JSON.stringify(verifyResult)}`)
   }
 
   return updatedItem
