@@ -50,8 +50,8 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
     this.setState({ newTicker: event.target.value })
   }
 
-  handleAlertUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(`handleAlertUrlChange: ${event.target.value}`)
+  handleAlertEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(`handleAlertEmailChange: ${event.target.value}`)
     const updatedValue: UserInfoItem = {
       email: (event.target.value) ? event.target.value : undefined,
       avatarUrl: this.state.userInfo.avatarUrl
@@ -86,9 +86,14 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
   }
 
   onWatchItemCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+    const ticker = this.state.newTicker
+    if (!ticker) {
+      return
+    }
+
     try {
       const newWatchItem = await createWatchItem(this.props.auth.getIdToken(), {
-        ticker: this.state.newTicker
+        ticker: ticker
       })
       this.setState({
         watchItems: [...this.state.watchItems, newWatchItem]
@@ -109,16 +114,22 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
     }
   }
 
-  onUpdateAlertUrl = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+  onUpdateAlertEmail = async (event: React.ChangeEvent<HTMLButtonElement>) => {
 
-    const updateUserInfoRequest: UpdateUserInfoRequest = {
-      ...this.state.userInfo
+    if (!this.state.userInfo.email) {
+      return
     }
+
+    if (!(/\S+@\S+\.\S+/.test(this.state.userInfo.email))) {
+      return
+    }
+
+    const updateUserInfoRequest: UpdateUserInfoRequest = { ...this.state.userInfo }
 
     try {
       const updatedItem = await updateUserInfo(this.props.auth.getIdToken(), updateUserInfoRequest)
       console.log(`Update user info: ${JSON.stringify(updatedItem)}`)
-      alert('Alert email address updated')
+      alert('Alert email address updated and verification e-mail sent. Please click the link in the verification e-mail to receive notifications.')
     } catch (e) {
       alert(` Alert email address update failed ${e.message} `)
     }
@@ -171,12 +182,12 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
                 labelPosition: 'left',
                 icon: 'add',
                 content: 'Alert email address',
-                onClick: this.onUpdateAlertUrl
+                onClick: this.onUpdateAlertEmail
               }}
               fluid
               actionPosition="left"
               placeholder={(this.state.userInfo.email) ? this.state.userInfo.email : ''}
-              onChange={this.handleAlertUrlChange}/>
+              onChange={this.handleAlertEmailChange}/>
             </Grid.Column>
 
             <Grid.Column textAlign='center' width={2}>
