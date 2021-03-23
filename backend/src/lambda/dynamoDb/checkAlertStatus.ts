@@ -44,7 +44,7 @@ export const handler: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent)
 
     console.log("**** TRIGGER NOTIFICATION ****")
     await trySendAlertEmailNotification(
-      userInfo.email, currentWatchItem.ticker, currentWatchItem.price, currentWatchItem.currency
+      userInfo.email, currentWatchItem.ticker, currentWatchItem.alertPrice, currentWatchItem.currency
     )
   }
 }
