@@ -4,6 +4,7 @@ import { DynamoDBStreamEvent, DynamoDBStreamHandler } from 'aws-lambda'
 import 'source-map-support/register'
 
 import { DbAccess } from '../../dataLayer/dbAccess'
+import { getUserInfoItemOrDefault } from '../../businessLogic/userInfo'
 
 export const handler: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent) => {
   console.log('Processing events batch from DynamoDB', JSON.stringify(event))
@@ -23,31 +24,39 @@ export const handler: DynamoDBStreamHandler = async (event: DynamoDBStreamEvent)
       continue
     }
 
+    const userId = previousItem.userId.S
+    const userInfo = await getUserInfoItemOrDefault(userId)
+    // TODO: check is verified aswell?
+    if (!userInfo.email) {
+      console.log('No email available for this userId so skip this record...')
+      continue
+    }
+
     const isPreviousAlert = previousItem.alertTriggered.BOOL
     if (isPreviousAlert) {
       console.log('Alert trigger already set, ignore as notification will already have been handled')
       continue
     }
 
-    const currentWatchItem = await dbAccess.getWatchItem(previousItem.userId.S, previousItem.watchId.S)
+    const currentWatchItem = await dbAccess.getWatchItem(userId, previousItem.watchId.S)
     if (!currentWatchItem.alertTriggered) {
       console.log('Alert trigger not currently set, ignore this change')
       continue
     }
 
     console.log("**** TRIGGER NOTIFICATION ****")
-    await sendAlertEmailNotification(currentWatchItem.ticker, currentWatchItem.price, currentWatchItem.currency)
+    await sendAlertEmailNotification(userInfo.email, currentWatchItem.ticker, currentWatchItem.price, currentWatchItem.currency)
   }
 }
 
-async function sendAlertEmailNotification(ticker: string, price: number, currency: string) {
+async function sendAlertEmailNotification(targetEmail: string, ticker: string, price: number, currency: string) {
   console.log(`In sendAlertEmailNotification for ${ticker}@${price} ${currency}`)
 
   // Create sendEmail params 
   var params = {
     Destination: { /* required */
       ToAddresses: [
-        '<**** TARGET_EMAIL ****>',
+        targetEmail,
         /* more items */
       ]
     },
