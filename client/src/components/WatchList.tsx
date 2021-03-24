@@ -116,11 +116,9 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
 
   onUpdateAlertEmail = async (event: React.ChangeEvent<HTMLButtonElement>) => {
 
-    if (!this.state.userInfo.email) {
-      return
-    }
+    const emailAddress = this.state.userInfo.email
 
-    if (!(/\S+@\S+\.\S+/.test(this.state.userInfo.email))) {
+    if (emailAddress && !(/\S+@\S+\.\S+/.test(emailAddress))) {
       return
     }
 
@@ -129,7 +127,11 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
     try {
       const updatedItem = await updateUserInfo(this.props.auth.getIdToken(), updateUserInfoRequest)
       console.log(`Update user info: ${JSON.stringify(updatedItem)}`)
-      alert('Alert email address updated and verification e-mail sent. Please click the link in the verification e-mail to receive notifications.')
+      if (emailAddress) {
+        alert(`Alert email address updated and verification e-mail sent to ${emailAddress}. Please click the link in the verification e-mail to receive notifications.`)
+      } else {
+        alert('Alert email address reset')
+      }
     } catch (e) {
       alert(` Alert email address update failed ${e.message} `)
     }
