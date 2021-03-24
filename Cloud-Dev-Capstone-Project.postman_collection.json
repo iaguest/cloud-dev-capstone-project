@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "255a818d-f29f-4a7d-8247-229d4f565bd8",
+		"_postman_id": "cd5412b1-beaa-4f83-9d9e-4ee0f25c8404",
 		"name": "Cloud-Dev-Capstone-Project",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -35,6 +35,35 @@
 			"response": []
 		},
 		{
+			"name": "Get user info",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{apiId}}.execute-api.eu-west-2.amazonaws.com/dev/userinfo",
+					"protocol": "https",
+					"host": [
+						"{{apiId}}",
+						"execute-api",
+						"eu-west-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"userinfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Create watch item",
 			"request": {
 				"method": "POST",
@@ -47,7 +76,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"ticker\": \"AAL\",\n\t\"description\": \"Anglo American PLC\"\n}",
+					"raw": "{\n  \"ticker\": \"TSLA\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -73,7 +102,7 @@
 			"response": []
 		},
 		{
-			"name": "Refresh watch item",
+			"name": "Refresh watchlist",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -85,7 +114,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"ticker\": \"AAL\",\n\t\"description\": \"Anglo American PLC\"\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -93,45 +122,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://{{apiId}}.execute-api.eu-west-2.amazonaws.com/dev/watchlist",
-					"protocol": "https",
-					"host": [
-						"{{apiId}}",
-						"execute-api",
-						"eu-west-2",
-						"amazonaws",
-						"com"
-					],
-					"path": [
-						"dev",
-						"watchlist"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update watch item",
-			"request": {
-				"method": "PATCH",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{authToken}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"alertPrice\": null\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://{{apiId}}.execute-api.eu-west-2.amazonaws.com/dev/watchlist/2ace8d36-c750-413c-8cfc-1ce984260ef5",
+					"raw": "https://{{apiId}}.execute-api.eu-west-2.amazonaws.com/dev/watchlist/1765225b-6ec1-4e7a-8d51-3f81768dcbe8/refresh",
 					"protocol": "https",
 					"host": [
 						"{{apiId}}",
@@ -143,7 +134,85 @@
 					"path": [
 						"dev",
 						"watchlist",
-						"2ace8d36-c750-413c-8cfc-1ce984260ef5"
+						"1765225b-6ec1-4e7a-8d51-3f81768dcbe8",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update watchlist",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"alertPrice\": 99\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{apiId}}.execute-api.eu-west-2.amazonaws.com/dev/watchlist/a7324db9-1fc5-4ee6-bf71-072d8a204810",
+					"protocol": "https",
+					"host": [
+						"{{apiId}}",
+						"execute-api",
+						"eu-west-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"watchlist",
+						"a7324db9-1fc5-4ee6-bf71-072d8a204810"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user info",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"success@simulator.amazonses.com\",\n  \"avatarUrl\": \"http://www.one.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{apiId}}.execute-api.eu-west-2.amazonaws.com/dev/userinfo",
+					"protocol": "https",
+					"host": [
+						"{{apiId}}",
+						"execute-api",
+						"eu-west-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"userinfo"
 					]
 				}
 			},
@@ -161,7 +230,7 @@
 					}
 				],
 				"url": {
-					"raw": "https://{{apiId}}.execute-api.eu-west-2.amazonaws.com/dev/watchlist/fa94df9d-d85d-4a06-af8a-1fc812f48eba",
+					"raw": "https://{{apiId}}.execute-api.eu-west-2.amazonaws.com/dev/watchlist/4760dd7e-cdef-4a1a-9b79-2aafa8031375",
 					"protocol": "https",
 					"host": [
 						"{{apiId}}",
@@ -173,7 +242,41 @@
 					"path": [
 						"dev",
 						"watchlist",
-						"fa94df9d-d85d-4a06-af8a-1fc812f48eba"
+						"4760dd7e-cdef-4a1a-9b79-2aafa8031375"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get attachment URL",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{apiId}}.execute-api.eu-west-2.amazonaws.com/dev/userinfo/attachment",
+					"protocol": "https",
+					"host": [
+						"{{apiId}}",
+						"execute-api",
+						"eu-west-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"userinfo",
+						"attachment"
 					]
 				}
 			},
@@ -203,11 +306,11 @@
 	"variable": [
 		{
 			"key": "apiId",
-			"value": "agjulyu0lf"
+			"value": ""
 		},
 		{
 			"key": "authToken",
-			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik5WSGs4d2RsMXZRWHljTzI5dzRsRCJ9.eyJpc3MiOiJodHRwczovL2Rldi1wZ3E0Y3d1bC51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDg1MDUxMDY5MTU5NDEzOTIwMDYiLCJhdWQiOiJJc3hXZ3dFZ0pmdGY4T3lIbHJqTTFjVWY0dnBaMHhzYSIsImlhdCI6MTYxNDk0MDI4OCwiZXhwIjoxNjE0OTc2Mjg4LCJhdF9oYXNoIjoiQ0U4Q2VVM0VZUkppVXFydUp0ZGRCZyIsIm5vbmNlIjoiZnhmWXdwZ0hBRV9ZYlZLWi1LQzZsSXViVjdWLmpuU2sifQ.YqxyEeRWP5DLPqUtPAOjxQbTE5f_N1CNtgR3hVB-SX6OVr9LQPNcy8XQfu2kteKOEe8u0IRo9m52OvcVr_RbX7kQfByfE3sjSF7VOlBgyY5lcURmIYaod3N7Sty6EQCjnwAOICuQTNqSqAaQD4SUgnSamywgNESvokze5xEexUI5pyl_AYVFuYYuozZKrPqUMjrS6jcW1VBhJYnz0Jiri8G3x-rJWcqlBTwAkCRujSwy-IxgwbC0XRWv32HDMkDN7BCIQOpWJqxRUT_kRr-dnbD0pJLqec8CEmQdU0fwDOd7Pk0_YWkjBZf4aYvX3R6KIC6OSP2DsQmfiZrbTaNhwA"
+			"value": ""
 		}
 	]
 }
