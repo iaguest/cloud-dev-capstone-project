@@ -107,15 +107,13 @@ export class DbAccess {
     return items as WatchItem[]
   }
 
-  // TODO: Re-assess use of scan here
+  // Using scan to get all watch items for all user ids so we can refresh item data at regular intervals
   async getAllWatchItems(): Promise<WatchItem[]> {
     console.log(`In getAllWatchItems...`)
 
     // Scan operation parameters
     const scanParams = {
       TableName: this.watchTable,
-      // Limit: limit,
-      // ExclusiveStartKey: nextKey
     }
 
     const result = await this.docClient.scan(scanParams).promise()
@@ -194,21 +192,6 @@ export class DbAccess {
       },
     }).promise()
   }
-
-  // async setTodoItemAttachmentUrl(userId: string, createdAt: string, url: string) {
-  //   logger.info("In setTodoItemAttachmentUrl...")
-  //   await this.docClient.update({
-  //     TableName: this.watchTable,
-  //     Key: {
-  //       'userId' : userId,
-  //       'createdAt' : createdAt
-  //     },
-  //     UpdateExpression: 'set attachmentUrl = :attachmentUrl',
-  //     ExpressionAttributeValues: {
-  //       ':attachmentUrl' : url,
-  //     }
-  //   }).promise()
-  // }
 
 }
 
