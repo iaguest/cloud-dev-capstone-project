@@ -253,7 +253,7 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
   renderWatchItemsList() {
     return (
       <Grid padded>
-        {this.state.watchItems.map((watchItem, pos) => {
+        {this.state.watchItems.sort((a,b)=>{return a.ticker.localeCompare(b.ticker)}).map((watchItem, pos) => {
           return (
             <Grid.Row key={watchItem.watchId}>
               <Grid.Column width={3} verticalAlign="middle">
