@@ -5,11 +5,10 @@ import { WatchItemUpdate } from '../models/WatchItemUpdate'
 import { WatchItemRefresh } from '../models/WatchItemRefresh'
 import { WatchItemInfoProvider } from '../models/WatchItemInfoProvider'
 import { DbAccess } from '../dataLayer/dbAccess'
-//import { deleteTodoItemAttachment } from '../dataLayer/fileAccess'
 import { CreateWatchItemRequest } from '../requests/CreateWatchItemRequest'
 import { UpdateWatchItemRequest } from '../requests/UpdateWatchItemRequest'
 
-import { MockFinanceInfoProvider } from './infoProviders'
+import { YahooFinanceInfoProvider } from './infoProviders'
 
 export async function getWatchItems(
   userId: string
@@ -142,5 +141,5 @@ function isTriggerAlert(previousPrice: number,
 }
 
 function createWatchItemInfoProvider(): WatchItemInfoProvider {
-  return new MockFinanceInfoProvider()
+  return new YahooFinanceInfoProvider()
 }

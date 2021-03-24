@@ -34,7 +34,7 @@ export class YahooFinanceInfoProvider extends WatchItemInfoProvider {
 
   async getInfo(ticker: string): Promise<WatchItemInfo> {
     console.log(`In getInfo, getting quote for ${ticker}...`);
-    const quote = this.yahooFinance.quote(ticker, ['price']);
+    const quote = await this.yahooFinance.quote(ticker, ['price']);
     console.log(`... quote retrieved ${JSON.stringify(quote)}`);
     const priceInfo = quote['price'];
     return {

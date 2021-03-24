@@ -52,7 +52,7 @@ export class EditWatchItem extends React.PureComponent<
           <Form.Field>
             <label>Price</label>
             <input
-              type="text"
+              type="number"
               value={this.state.alertPrice || ''} 
               onChange={this.handleAlertPriceChange}
             />

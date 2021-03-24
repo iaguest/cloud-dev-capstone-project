@@ -181,7 +181,7 @@ export class WatchList extends React.PureComponent<WatchListProps, WatchListStat
                 color: 'teal',
                 labelPosition: 'left',
                 icon: 'add',
-                content: 'Alert email address',
+                content: 'Alert email',
                 onClick: this.onUpdateAlertEmail
               }}
               fluid
