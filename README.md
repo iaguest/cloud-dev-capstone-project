@@ -16,6 +16,10 @@ cloud-dev-capstone-project is an application built using AWS Lambda and Serverle
 
 * A user can customize their personal watchlist by clicking the image placeholder and uploading an image file.
 
+# Screenshot
+
+![Alt text](screenshots/screenshot.png?raw=true "Image 1")
+
 # Postman Collection
 
 A postman collection is included to help exercise/test the API directly.
