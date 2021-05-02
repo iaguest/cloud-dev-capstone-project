@@ -4,7 +4,7 @@ cloud-dev-capstone-project is an application built using AWS Lambda and Serverle
 
 # Functionality of the application
 
-* The application allows a watchlist of stock tickers e.g. AAPL, TSLA etc to be created and monitored via a React frontend.
+* The application allows a private watchlist of stock tickers e.g. AAPL, TSLA etc to be created and monitored via a React frontend.
 
 * The application uses the yahoo-finance node.js library to supply the data (see https://www.npmjs.com/package/yahoo-finance). This is available freely to use under an MIT license.
 
